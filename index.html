@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1337 Detailing — Soufflenheim et alentours</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --black:   #060606;
+            --surface: #0c0c0c;
+            --surface2: #121212;
+            --border:  #1a1a1a;
+            --border2: #262626;
+            --white:   #f5f5f5;
+            --muted:   #8a8a8a;
+            --muted2:  #3a3a3a;
+            --accent:  #d4af37; /* Or Premium */
+            --accent-rgb: 212, 175, 55;
+        }
+
+        html { 
+            scroll-behavior: smooth; 
+            scroll-padding-top: 100px; 
+        }
+
+        body {
+            background: var(--black);
+            color: var(--white);
+            font-family: 'Inter', sans-serif;
+            font-size: 16px;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* ─── CURSEUR PREMIUM PERSONNALISÉ ─── */
+        #cursorDot {
+            width: 6px; height: 6px; background: var(--accent);
+            position: fixed; border-radius: 50%; pointer-events: none; z-index: 10000;
+            transform: translate(-50%, -50%);
+            transition: width 0.2s, height 0.2s;
+        }
+        #cursorCircle {
+            width: 26px; height: 26px; border: 1px solid rgba(var(--accent-rgb), 0.4);
+            position: fixed; border-radius: 50%; pointer-events: none; z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: left 0.08s cubic-bezier(0.25, 1, 0.5, 1), top 0.08s cubic-bezier(0.25, 1, 0.5, 1), width 0.3s, height 0.3s, background 0.3s, border-color 0.3s;
+        }
+        body.hovering #cursorCircle {
+            width: 46px; height: 46px; background: rgba(var(--accent-rgb), 0.08); border-color: var(--accent);
+        }
+        body.hovering #cursorDot { width: 0px; height: 0px; }
+
+        /* ─── SCROLL REVEAL ANIMATION ─── */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px) scale(0.99);
+            transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1), transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        /* ─── NAV ─── */
+        nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 999;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 60px;
+            background: rgba(6,6,6,0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .nav-logo {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.4rem;
+            letter-spacing: 0.14em;
+            color: var(--white);
+            text-decoration: none;
+        }
+        .nav-logo span { color: var(--accent); }
+
+        .nav-links { list-style: none; display: flex; gap: 40px; }
+        .nav-links a {
+            color: var(--muted);
+            text-decoration: none;
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            transition: color 0.3s, text-shadow 0.3s;
+        }
+        .nav-links a:hover { 
+            color: var(--accent); 
+            text-shadow: 0 0 10px rgba(var(--accent-rgb), 0.3);
+        }
+
+        /* ─── HERO CINEMATIC ─── */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 0 60px 80px;
+            position: relative;
+            overflow: hidden;
+            background-image: radial-gradient(circle, rgba(255,255,255,0.02) 1px, transparent 1px);
+            background-size: 30px 30px;
+        }
+
+        .hero::before {
+            content: ''; position: absolute; inset: 0;
+            background:
+                radial-gradient(ellipse 65% 55% at 78% 30%, rgba(var(--accent-rgb), 0.04) 0%, transparent 60%),
+                linear-gradient(to bottom, rgba(6,6,6,0) 55%, rgba(6,6,6,1) 100%);
+            pointer-events: none;
+        }
+
+        .hero::after {
+            content: ''; position: absolute; top: -100%; left: -70%; width: 30%; height: 350%;
+            background: linear-gradient(100deg, transparent 0%, rgba(var(--accent-rgb), 0.01) 42%, rgba(var(--accent-rgb), 0.05) 50%, rgba(var(--accent-rgb), 0.01) 58%, transparent 100%);
+            transform: rotate(14deg);
+            animation: lightsweep 10s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes lightsweep {
+            0%   { left: -70%; opacity: 0; }
+            4%   { opacity: 1; }
+            40%  { left: 130%; opacity: 1; }
+            45%  { opacity: 0; }
+            100% { left: 130%; opacity: 0; }
+        }
+
+        .hero-eyebrow {
+            position: relative; z-index: 1;
+            display: flex; align-items: center; gap: 14px;
+            font-size: 0.7rem; font-weight: 600;
+            letter-spacing: 0.22em; text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 24px;
+        }
+        .hero-eyebrow::before { content: ''; display: block; width: 30px; height: 1px; background: var(--accent); }
+
+        .hero-title {
+            position: relative; z-index: 1;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: clamp(4.5rem, 11vw, 9.5rem);
+            line-height: 0.88;
+            letter-spacing: 0.02em;
+            text-transform: uppercase;
+            margin-bottom: 50px;
+        }
+
+        .hero-line { overflow: hidden; height: auto; }
+        .hero-line span { 
+            display: inline-block; 
+            transform: translateY(100%); 
+            animation: revealTextUp 1.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        .hero-line:nth-child(1) span { animation-delay: 0.1s; }
+        .hero-line:nth-child(2) span { animation-delay: 0.3s; }
+        .hero-line:nth-child(3) span { animation-delay: 0.5s; }
+
+        @keyframes revealTextUp { to { transform: translateY(0); } }
+
+        .hero-title .outline {
+            -webkit-text-stroke: 1px rgba(255,255,255,0.15);
+            color: transparent;
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .hero-title:hover .outline {
+            -webkit-text-stroke: 1px var(--accent);
+            text-shadow: 0 0 30px rgba(var(--accent-rgb), 0.2);
+            color: rgba(var(--accent-rgb), 0.03);
+        }
+
+        .hero-foot {
+            position: relative; z-index: 1;
+            display: flex; justify-content: space-between; align-items: flex-end; gap: 40px;
+            padding-top: 32px; border-top: 1px solid var(--border);
+        }
+
+        .hero-desc { max-width: 460px; color: var(--muted); font-size: 0.9rem; font-weight: 300; line-height: 1.9; }
+        .hero-desc strong { color: var(--white); font-weight: 500; }
+
+        .hero-ctas { display: flex; gap: 12px; flex-shrink: 0; }
+
+        /* ─── BUTTONS ─── */
+        .btn {
+            display: inline-flex; align-items: center; padding: 14px 30px;
+            font-family: 'Inter', sans-serif; font-size: 0.7rem; font-weight: 600;
+            letter-spacing: 0.13em; text-transform: uppercase; text-decoration: none;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); border: none; cursor: pointer;
+        }
+        .btn-white { background: var(--white); color: var(--black); }
+        .btn-white:hover { 
+            background: var(--accent); color: #000;
+            box-shadow: 0 0 30px rgba(var(--accent-rgb), 0.4); 
+            transform: translateY(-2px);
+        }
+        .btn-ghost { background: transparent; color: var(--white); border: 1px solid var(--border2); }
+        .btn-ghost:hover { 
+            border-color: var(--accent); color: var(--accent);
+            box-shadow: 0 0 20px rgba(var(--accent-rgb), 0.1);
+            transform: translateY(-2px);
+        }
+
+        /* ─── TICKER ─── */
+        .ticker { overflow: hidden; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); background: var(--surface); padding: 16px 0; }
+        .ticker-track { display: flex; white-space: nowrap; animation: ticker-scroll 24s linear infinite; width: max-content; }
+        @keyframes ticker-scroll { from { transform: translateX(0); } to   { transform: translateX(-50%); } }
+        .ticker-item { font-family: 'Bebas Neue', sans-serif; font-size: 0.95rem; letter-spacing: 0.18em; color: var(--muted); text-transform: uppercase; padding: 0 28px; }
+        .ticker-item.highlight { color: var(--accent); }
+        .ticker-sep { font-size: 0.5rem; color: var(--muted2); display: flex; align-items: center; }
+
+        /* ─── SECTION SHELL ─── */
+        .sec { padding: 120px 60px; }
+        .sec-label {
+            display: flex; align-items: center; gap: 14px;
+            font-size: 0.68rem; font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase;
+            color: var(--accent); margin-bottom: 12px;
+        }
+        .sec-label::before { content: ''; display: block; width: 18px; height: 1px; background: var(--accent); }
+        .sec-title { font-family: 'Bebas Neue', sans-serif; font-size: clamp(2.6rem, 4.5vw, 4rem); letter-spacing: 0.04em; text-transform: uppercase; line-height: 1; margin-bottom: 20px; }
+        .sec-subtitle { font-size: 0.88rem; color: var(--muted); margin-bottom: 60px; max-width: 660px; line-height: 1.7; }
+
+        /* ─── SERVICES MINIMALIST LIST ─── */
+        #services { background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+        .svc-group-label { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); padding: 50px 0 16px; border-bottom: 1px solid var(--border2); margin-top: 30px; }
+        .svc-group-label:first-of-type { margin-top: 0; padding-top: 0; }
+
+        .svc-row {
+            display: grid;
+            grid-template-columns: 40px 1.8fr 2.5fr auto;
+            align-items: center; gap: 32px; padding: 28px 20px;
+            border-bottom: 1px solid var(--border);
+            position: relative; cursor: pointer;
+            transition: background 0.4s cubic-bezier(0.16, 1, 0.3, 1), padding-left 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .svc-row::after {
+            content: ''; position: absolute; bottom: -1px; left: 0; width: 0; height: 1px; background: var(--accent);
+            transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .svc-row:hover { background: rgba(212, 175, 55, 0.02); padding-left: 32px; }
+        .svc-row:hover::after { width: 100%; }
+        .svc-row:hover .svc-num { color: var(--accent); }
+        .svc-row:hover .svc-name { color: var(--white); }
+
+        .svc-num { font-family: 'Bebas Neue', sans-serif; font-size: 1rem; color: var(--muted2); letter-spacing: 0.05em; transition: color 0.3s; }
+        .svc-name { font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; letter-spacing: 0.04em; text-transform: uppercase; line-height: 1.1; color: #d0d0d0; transition: color 0.3s; }
+        .svc-tagline { font-size: 0.85rem; color: var(--muted); font-weight: 300; }
+
+        .svc-cta-discover {
+            font-size: 0.68rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent);
+            display: flex; align-items: center; gap: 8px; transition: gap 0.3s ease, text-shadow 0.3s;
+        }
+        .svc-row:hover .svc-cta-discover { gap: 14px; text-shadow: 0 0 10px rgba(var(--accent-rgb), 0.4); }
+
+        /* ─── ULTRA-PREMIUM MODAL WINDOW ─── */
+        .modal-overlay {
+            position: fixed; inset: 0; background: rgba(3, 3, 3, 0.85);
+            backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+            z-index: 2000; display: flex; align-items: center; justify-content: center;
+            opacity: 0; pointer-events: none; transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1); padding: 24px;
+        }
+        .modal-overlay.open { opacity: 1; pointer-events: auto; }
+
+        .modal-content {
+            background: #0a0a0a; border: 1px solid var(--border);
+            max-width: 680px; width: 100%; padding: 48px; position: relative;
+            transform: translateY(40px) scale(0.97);
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.6s;
+            box-shadow: 0 30px 90px rgba(0, 0, 0, 0.9), 0 0 50px rgba(var(--accent-rgb), 0.02);
+        }
+        .modal-overlay.open .modal-content { transform: translateY(0) scale(1); border-color: rgba(var(--accent-rgb), 0.3); }
+
+        .modal-close {
+            position: absolute; top: 28px; right: 28px; background: transparent; border: none;
+            color: var(--muted); font-size: 1.6rem; cursor: pointer; transition: color 0.3s, transform 0.3s;
+            display: flex; align-items: center; justify-content: center; width: 30px; height: 30px;
+        }
+        .modal-close:hover { color: var(--accent); transform: rotate(90deg); }
+
+        .modal-header { display: flex; align-items: baseline; gap: 16px; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 16px; }
+        .modal-num { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; color: var(--accent); letter-spacing: 0.05em; }
+        .modal-title { font-family: 'Bebas Neue', sans-serif; font-size: 2.6rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--white); line-height: 1; }
+        
+        .modal-desc { font-size: 0.92rem; color: var(--muted); line-height: 1.8; font-weight: 300; margin-bottom: 26px; }
+        .modal-offer-zone { margin-bottom: 28px; }
+
+        .svc-offer-tag {
+            display: inline-block; font-size: 0.58rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #fff;
+            border: 1px solid rgba(var(--accent-rgb), 0.4); background: linear-gradient(135deg, rgba(var(--accent-rgb), 0.2), rgba(var(--accent-rgb), 0.04));
+            padding: 5px 12px; border-radius: 2px; box-shadow: 0 0 15px rgba(var(--accent-rgb), 0.12);
+        }
+        .svc-tag-neutral {
+            display: inline-block; font-size: 0.58rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent);
+            border: 1px solid rgba(var(--accent-rgb), 0.2); background: rgba(var(--accent-rgb), 0.03); padding: 5px 12px; border-radius: 2px;
+        }
+
+        .modal-grid-title { font-size: 0.7rem; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; color: var(--white); margin-bottom: 16px; }
+        
+        .modal-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 36px; }
+        
+        .price-chip {
+            background: #0f0f0f; border: 1px solid var(--border); padding: 12px; border-radius: 2px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .price-chip:hover { border-color: var(--accent); background: rgba(var(--accent-rgb), 0.04); transform: scale(1.04); }
+        .price-chip .cat-label { font-size: 0.55rem; text-transform: uppercase; color: var(--muted); letter-spacing: 0.06em; margin-bottom: 4px; font-weight: 500; }
+        .price-chip .cat-val { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; color: var(--white); letter-spacing: 0.02em; line-height: 1; }
+
+        .modal-action { display: flex; justify-content: flex-end; }
+
+        /* ─── CONTACT ─── */
+        #contact { background: var(--surface2); border-top: 1px solid var(--border); }
+        .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; }
+        .contact-channels { display: flex; flex-direction: column; gap: 16px; }
+        .contact-link {
+            display: flex; align-items: center; gap: 22px; padding: 26px 28px; border: 1px solid var(--border); background: var(--black);
+            text-decoration: none; color: inherit; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .contact-link:hover { border-color: var(--accent); background: #0b0b0b; transform: translateY(-2px); box-shadow: 0 5px 25px rgba(0,0,0,0.5); }
+        .contact-link-icon { font-size: 1.5rem; flex-shrink: 0; color: var(--accent); }
+        .contact-link-type { display: block; font-size: 0.65rem; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); margin-bottom: 5px; }
+        .contact-link-val { font-size: 0.95rem; color: var(--white); font-weight: 500; }
+
+        /* ─── FOOTER ─── */
+        footer { padding: 32px 60px; background: var(--black); border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+        footer p { font-size: 0.7rem; color: var(--muted2); letter-spacing: 0.05em; text-transform: uppercase; }
+
+        /* ─── RESPONSIVE ─── */
+        @media (max-width: 900px) {
+            nav { padding: 18px 30px; }
+            .nav-links { display: none; }
+            .sec { padding: 90px 24px; }
+            .svc-row { grid-template-columns: 1fr auto; gap: 8px; padding: 24px 12px; }
+            .svc-num { display: none; }
+            .svc-tagline { grid-column: 1; }
+            .svc-cta-discover { grid-column: 1 / -1; margin-top: 6px; }
+            .modal-content { padding: 36px 24px; }
+            .modal-grid { grid-template-columns: repeat(2, 1fr); }
+            .contact-grid { grid-template-columns: 1fr; }
+            footer { flex-direction: column; gap: 12px; text-align: center; padding: 32px 24px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ═══ CURSEUR INTÉLLIGENT ═══ -->
+<div id="cursorDot"></div>
+<div id="cursorCircle"></div>
+
+<!-- ═══ NAV ═══ -->
+<nav>
+    <a href="#home" class="nav-logo">1337 <span>Detailing</span></a>
+    <ul class="nav-links">
+        <li><a href="#services">Prestations</a></li>
+        <li><a href="#contact">Contact</a></li>
+    </ul>
+</nav>
+
+<!-- ═══ HERO ═══ -->
+<section class="hero" id="home">
+    <div class="hero-eyebrow">Soufflenheim & Alentours</div>
+    <h1 class="hero-title">
+        <div class="hero-line"><span>La</span></div>
+        <div class="hero-line"><span>finition</span></div>
+        <div class="hero-line"><span>parfaite.</span></div>
+    </h1>
+    <div class="hero-foot">
+        <p class="hero-desc">
+            Détailing professionnel de prestige. <strong>Intervention directement chez vous</strong> à Soufflenheim et alentours pour sublimer l'esthétique de votre véhicule grâce à une rigueur absolue.
+        </p>
+        <div class="hero-ctas">
+            <a href="#services" class="btn btn-white">Découvrir les offres</a>
+            <a href="#contact"  class="btn btn-ghost">Prendre RDV</a>
+        </div>
+    </div>
+</section>
+
+<!-- ═══ TICKER CONTINU ═══ -->
+<div class="ticker">
+    <div class="ticker-track">
+        <span class="ticker-item">Lavage Premium</span><span class="ticker-sep">·</span>
+        <span class="ticker-item highlight">Intervention à domicile</span><span class="ticker-sep">·</span>
+        <span class="ticker-item">Correction peinture</span><span class="ticker-sep">·</span>
+        <span class="ticker-item">Céramique</span><span class="ticker-sep">·</span>
+        <span class="ticker-item">Effet miroir</span><span class="ticker-sep">·</span>
+        <span class="ticker-item">Soufflenheim</span><span class="ticker-sep">·</span>
+        <span class="ticker-item">1337 Detailing</span><span class="ticker-sep">·</span>
+        <!-- Boucle pour fluidité infinie -->
+        <span class="ticker-item">Lavage Premium</span><span class="ticker-sep">·</span>
+        <span class="ticker-item highlight">Intervention à domicile</span><span class="ticker-sep">·</span>
+        <span class="ticker-item">Correction peinture</span><span class="ticker-sep">·</span>
+        <span class="ticker-item">Céramique</span><span class="ticker-sep">·</span>
+        <span class="ticker-item">Effet miroir</span><span class="ticker-sep">·</span>
+        <span class="ticker-item">Soufflenheim</span><span class="ticker-sep">·</span>
+        <span class="ticker-item">1337 Detailing</span><span class="ticker-sep">·</span>
+    </div>
+</div>
+
+<!-- ═══ SERVICES ═══ -->
+<section class="sec" id="services">
+    <div class="sec-label">Prestations & Menus</div>
+    <h2 class="sec-title">L'art du détail</h2>
+    <p class="sec-subtitle">Sélectionnez une prestation ci-dessous pour ouvrir les détails techniques et consulter la tarification sur-mesure ajustée à votre gabarit de carrosserie.</p>
+
+    <!-- GROUPE 1 : LAVAGE -->
+    <div class="svc-group-label reveal">Formules Lavage</div>
+
+    <div class="svc-row reveal" data-id="01" data-title="Lavage Extérieur" 
+         data-desc="Nettoyage d'orfèvre via la technique des deux seaux. Prélavage à la mousse active, décontamination des jantes, dégraissage des passages de roues et séchage pour éviter les dépôts de calcaire."
+         data-tag="Finition Brillante" data-offer=""
+         data-p-moto="30€" data-p-citadine="35€" data-p-berline="40€" data-p-suv="50€">
+        <div class="svc-num">01</div>
+        <div class="svc-name">Lavage Extérieur</div>
+        <div class="svc-tagline">Nettoyage technique de la carrosserie et décontamination des jantes.</div>
+        <div class="svc-cta-discover">Consulter les tarifs <span>→</span></div>
+    </div>
+
+    <div class="svc-row reveal" data-id="02" data-title="Lavage Intérieur" 
+         data-desc="Aspiration chirurgicale des moquettes, nettoyage et dégraissage en profondeur des plastiques et recoins de l'habitacle. Traitement anti-UV des surfaces et finitions des vitres intérieures sans traces."
+         data-tag="Habitacle Assaini" data-offer=""
+         data-p-moto="—" data-p-citadine="50€" data-p-berline="60€" data-p-suv="65€">
+        <div class="svc-num">02</div>
+        <div class="svc-name">Lavage Intérieur</div>
+        <div class="svc-tagline">Dégraissage minutieux de l'habitacle et traitement des plastiques.</div>
+        <div class="svc-cta-discover">Consulter les tarifs <span>→</span></div>
+    </div>
+
+    <div class="svc-row reveal" data-id="03" data-title="Lavage Extérieur + Intérieur" 
+         data-desc="Le pack ultime combinant nos processus experts extérieur et intérieur. Idéal pour redonner au véhicule un aspect irréprochable et sain."
+         data-tag="" data-offer="Économie exclusive de -20% déjà calculée et appliquée sur cette formule"
+         data-p-moto="—" data-p-citadine="68€" data-p-berline="80€" data-p-suv="92€">
+        <div class="svc-num">03</div>
+        <div class="svc-name">Lavage Extérieur + Intérieur</div>
+        <div class="svc-tagline">Formule complète combinant le soin intérieur et extérieur.</div>
+        <div class="svc-cta-discover">Consulter les tarifs <span>→</span></div>
+    </div>
+
+    <!-- GROUPE 2 : CORRECTION & PROTECTION -->
+    <div class="svc-group-label reveal">Correction & Protection</div>
+
+    <div class="svc-row reveal" data-id="04" data-title="Lustrage Effet Miroir" 
+         data-desc="Polissage de finition intensif conçu pour éradiquer le voile d'oxydation terne, rehausser radicalement la clarté optique du vernis et offrir une brillance miroir."
+         data-tag="" data-offer="Offre Spéciale : -50% sur la Cire Synthétique Longue Durée avec ce soin"
+         data-p-moto="60€" data-p-citadine="100€" data-p-berline="115€" data-p-suv="130€">
+        <div class="svc-num">04</div>
+        <div class="svc-name">Lustrage Effet Miroir</div>
+        <div class="svc-tagline">Restauration de l'éclat et profondeur miroir maximale du vernis.</div>
+        <div class="svc-cta-discover">Consulter les tarifs <span>→</span></div>
+    </div>
+
+    <div class="svc-row reveal" data-id="05" data-title="Correction Peinture Niveau 1" 
+         data-desc="Polissage de correction intermédiaire permettant la suppression de 60 à 70% des micro-rayures superficielles légères et défauts routiers d'usure courante."
+         data-tag="" data-offer="Offre Spéciale : -50% sur la Cire Synthétique Longue Durée avec ce soin"
+         data-p-moto="90€" data-p-citadine="150€" data-p-berline="170€" data-p-suv="190€">
+        <div class="svc-num">05</div>
+        <div class="svc-name">Correction Peinture Niveau 1</div>
+        <div class="svc-tagline">Élimination des micro-rayures légères pour clarifier le vernis.</div>
+        <div class="svc-cta-discover">Consulter les tarifs <span>→</span></div>
+    </div>
+
+    <div class="svc-row reveal" data-id="06" data-title="Correction Peinture Niveau 2" 
+         data-desc="Polissage intensif multi-étapes lourd. Élimine jusqu'à 90% des défauts majeurs, rayures installées, hologrammes de lavage et redonne une seconde jeunesse à votre peinture."
+         data-tag="" data-offer="Offre Spéciale : -50% sur la Cire Synthétique Longue Durée avec ce soin"
+         data-p-moto="130€" data-p-citadine="200€" data-p-berline="240€" data-p-suv="280€">
+        <div class="svc-num">06</div>
+        <div class="svc-name">Correction Peinture Niveau 2</div>
+        <div class="svc-tagline">Polissage lourd multi-passes contre les défauts et rayures profonds.</div>
+        <div class="svc-cta-discover">Consulter les tarifs <span>→</span></div>
+    </div>
+
+    <div class="svc-row reveal" data-id="07" data-title="Traitement Céramique" 
+         data-desc="Application d'une protection nano-technologique vitrifiée. Crée une barrière permanente ultra-hydrophobe, protège contre l'oxydation, les fientes d'oiseaux et facilite grandement les futurs lavages."
+         data-tag="Protection Longue Durée" data-offer=""
+         data-p-moto="80€" data-p-citadine="100€" data-p-berline="130€" data-p-suv="160€">
+        <div class="svc-num">07</div>
+        <div class="svc-name">Traitement Céramique</div>
+        <div class="svc-tagline">Protection moléculaire hydrophobe effet bouclier longue tenue.</div>
+        <div class="svc-cta-discover">Consulter les tarifs <span>→</span></div>
+    </div>
+
+    <div class="svc-row reveal" data-id="08" data-title="Cire Synthétique Longue Durée" 
+         data-desc="Pose manuelle d'un scellant synthétique haut de gamme (Sealant). Apporte une protection hydrophobe robuste contre les agressions et un superbe éclat soyeux au toucher."
+         data-tag="Protection Renforcée" data-offer="Bénéficiez de -50% si couplé à un lustrage ou une correction de peinture"
+         data-p-moto="25€" data-p-citadine="40€" data-p-berline="50€" data-p-suv="70€">
+        <div class="svc-num">08</div>
+        <div class="svc-name">Cire Synthétique Longue Durée</div>
+        <div class="svc-tagline">Application d'une cire de protection pour un bel éclat hydrophobe.</div>
+        <div class="svc-cta-discover">Consulter les tarifs <span>→</span></div>
+    </div>
+</section>
+
+<!-- ═══ FENÊTRE MODALE DYNAMIQUE ═══ -->
+<div class="modal-overlay" id="svcModal">
+    <div class="modal-content">
+        <button class="modal-close" id="modalClose" aria-label="Fermer">&times;</button>
+        <div class="modal-header">
+            <span class="modal-num" id="modalNum">00</span>
+            <h3 class="modal-title" id="modalTitle">Prestation</h3>
+        </div>
+        <p class="modal-desc" id="modalDesc">Détails de la prestation...</p>
+        
+        <div class="modal-offer-zone" id="modalOfferZone"></div>
+        
+        <div class="modal-grid-title">Grille tarifaire par catégorie</div>
+        <div class="modal-grid" id="modalGrid"></div>
+        
+        <div class="modal-action">
+            <a href="#contact" class="btn btn-white" id="modalBookBtn">Prendre rendez-vous</a>
+        </div>
+    </div>
+</div>
+
+<!-- ═══ CONTACT ═══ -->
+<section class="sec reveal" id="contact">
+    <div class="sec-label">Réservation</div>
+    <h2 class="sec-title">Sublimer votre véhicule</h2>
+    <p class="sec-subtitle">Contactez notre atelier mobile pour fixer un rendez-vous ou demander une analyse sur-mesure de votre projet.</p>
+
+    <div class="contact-grid">
+        <div class="contact-channels">
+            <a href="mailto:1337Detailing@protonmail.com" class="contact-link">
+                <div class="contact-link-icon">✉</div>
+                <div>
+                    <span class="contact-link-type">Email direct</span>
+                    <span class="contact-link-val">1337Detailing@protonmail.com</span>
+                </div>
+            </a>
+
+            <a href="https://instagram.com/1337_Detailing_" target="_blank" class="contact-link">
+                <div class="contact-link-icon">📷</div>
+                <div>
+                    <span class="contact-link-type">Instagram Portfolio</span>
+                    <span class="contact-link-val">@1337_Detailing_</span>
+                </div>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- ═══ FOOTER ═══ -->
+<footer>
+    <p>© 1337 Detailing</p>
+    <p>Soufflenheim & alentours</p>
+</footer>
+
+<!-- ═══ SCRIPTS INTERACTIFS & INTERSECTION OBSERVER ═══ -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        
+        // ─── MANAGEMENT DU CURSEUR PREMIUM ───
+        const cursorDot = document.getElementById('cursorDot');
+        const cursorCircle = document.getElementById('cursorCircle');
+        
+        if (window.matchMedia('(pointer: fine)').matches) {
+            document.addEventListener('mousemove', function (e) {
+                cursorDot.style.left = e.clientX + 'px';
+                cursorDot.style.top = e.clientY + 'px';
+                
+                cursorCircle.style.left = e.clientX + 'px';
+                cursorCircle.style.top = e.clientY + 'px';
+            });
+
+            const interactiveElements = document.querySelectorAll('a, button, .svc-row, .price-chip');
+            interactiveElements.forEach(el => {
+                el.addEventListener('mouseenter', () => document.body.classList.add('hovering'));
+                el.addEventListener('mouseleave', () => document.body.classList.remove('hovering'));
+            });
+        } else {
+            cursorDot.style.display = 'none';
+            cursorCircle.style.display = 'none';
+        }
+
+        // ─── GESTION DE LA FENÊTRE MODALE DYNAMIQUE ───
+        const svcRows = document.querySelectorAll('.svc-row');
+        const modal = document.getElementById('svcModal');
+        const modalNum = document.getElementById('modalNum');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalDesc = document.getElementById('modalDesc');
+        const modalOfferZone = document.getElementById('modalOfferZone');
+        const modalGrid = document.getElementById('modalGrid');
+        const modalClose = document.getElementById('modalClose');
+        const modalBookBtn = document.getElementById('modalBookBtn');
+
+        svcRows.forEach(row => {
+            row.addEventListener('click', () => {
+                const id = row.getAttribute('data-id');
+                const title = row.getAttribute('data-title');
+                const desc = row.getAttribute('data-desc');
+                const tag = row.getAttribute('data-tag');
+                const offer = row.getAttribute('data-offer');
+                
+                const pMoto = row.getAttribute('data-p-moto');
+                const pCitadine = row.getAttribute('data-p-citadine');
+                const pBerline = row.getAttribute('data-p-berline');
+                const pSuv = row.getAttribute('data-p-suv');
+                
+                modalNum.textContent = id;
+                modalTitle.textContent = title;
+                modalDesc.textContent = desc;
+                
+                let offerHTML = '';
+                if (offer) {
+                    offerHTML += `<span class="svc-offer-tag">${offer}</span>`;
+                } else if (tag) {
+                    offerHTML += `<span class="svc-tag-neutral">${tag}</span>`;
+                }
+                modalOfferZone.innerHTML = offerHTML;
+                
+                modalGrid.innerHTML = `
+                    <div class="price-chip"><span class="cat-label">Moto</span><span class="cat-val">${pMoto}</span></div>
+                    <div class="price-chip"><span class="cat-label">Citadine</span><span class="cat-val">${pCitadine}</span></div>
+                    <div class="price-chip"><span class="cat-label">Berline/Break</span><span class="cat-val">${pBerline}</span></div>
+                    <div class="price-chip"><span class="cat-label">SUV / 4x4</span><span class="cat-val">${pSuv}</span></div>
+                `;
+                
+                modal.classList.add('open');
+                document.body.style.overflow = 'hidden';
+            });
+        });
+
+        function closeModal() {
+            modal.classList.remove('open');
+            document.body.style.overflow = '';
+        }
+
+        modalClose.addEventListener('click', closeModal);
+        modalBookBtn.addEventListener('click', closeModal);
+        
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) closeModal();
+        });
+        
+        document.addEventListener('keydown', (e) => {
+            if (e.key === "Escape" && modal.classList.contains('open')) closeModal();
+        });
+
+        // ─── ANIMATION AU SCROLL (SCROLL REVEAL) ───
+        const revealElements = document.querySelectorAll(".reveal");
+        const revealObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add("active");
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, {
+            threshold: 0.02,
+            rootMargin: "0px 0px -30px 0px"
+        });
+
+        revealElements.forEach(el => revealObserver.observe(el));
+    });
+</script>
+
+</body>
+</html>
