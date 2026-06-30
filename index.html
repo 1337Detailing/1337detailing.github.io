@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1337 Detailing — Soufflenheim et alentours</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --black:   #080808;
+            --surface: #101010;
+            --surface2: #161616;
+            --border:  #1e1e1e;
+            --border2: #2c2c2c;
+            --white:   #f0f0f0;
+            --muted:   #7a7a7a;
+            --muted2:  #333333;
+            --accent:  #d4af37; /* Touche dorée premium */
+            --accent-rgb: 212, 175, 55;
+        }
+
+        html { 
+            scroll-behavior: smooth; 
+            scroll-padding-top: 100px; 
+        }
+
+        body {
+            background: var(--black);
+            color: var(--white);
+            font-family: 'Inter', sans-serif;
+            font-size: 16px;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* ─── SCROLL REVEAL ANIMATION ─── */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ─── NAV ─── */
+        nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 999;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 60px;
+            background: rgba(8,8,8,0.92);
+            backdrop-filter: blur(24px);
+            border-bottom: 1px solid var(--border);
+            transition: all 0.4s ease;
+        }
+
+        .nav-logo {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.4rem;
+            letter-spacing: 0.14em;
+            color: var(--white);
+            text-decoration: none;
+            transition: transform 0.3s ease;
+        }
+        .nav-logo:hover { transform: scale(1.02); }
+        .nav-logo span { color: var(--accent); }
+
+        .nav-links { list-style: none; display: flex; gap: 40px; }
+
+        .nav-links a {
+            color: var(--muted);
+            text-decoration: none;
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            transition: color 0.3s cubic-bezier(0.16, 1, 0.3, 1), text-shadow 0.3s;
+        }
+        .nav-links a:hover { 
+            color: var(--accent); 
+            text-shadow: 0 0 10px rgba(var(--accent-rgb), 0.4);
+        }
+
+        /* ─── HERO ─── */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 0 60px 80px;
+            position: relative;
+            overflow: hidden;
+            background-image: radial-gradient(circle, rgba(255,255,255,0.03) 1px, transparent 1px);
+            background-size: 28px 28px;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 65% 55% at 78% 30%, rgba(212, 175, 55, 0.04) 0%, transparent 60%),
+                linear-gradient(to bottom, rgba(8,8,8,0) 55%, rgba(8,8,8,1) 100%);
+            pointer-events: none;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            top: -100%; left: -70%;
+            width: 30%; height: 350%;
+            background: linear-gradient(
+                100deg,
+                transparent 0%,
+                rgba(212, 175, 55, 0.01) 42%,
+                rgba(212, 175, 55, 0.06) 50%,
+                rgba(212, 175, 55, 0.01) 58%,
+                transparent 100%
+            );
+            transform: rotate(14deg);
+            animation: lightsweep 9s ease-in-out infinite;
+            animation-delay: 1s;
+            pointer-events: none;
+        }
+
+        @keyframes lightsweep {
+            0%   { left: -70%; opacity: 0; }
+            5%   { opacity: 1; }
+            44%  { left: 130%; opacity: 1; }
+            50%  { opacity: 0; }
+            100% { left: 130%; opacity: 0; }
+        }
+
+        .hero-eyebrow {
+            position: relative; z-index: 1;
+            display: flex; align-items: center; gap: 14px;
+            font-size: 0.7rem; font-weight: 600;
+            letter-spacing: 0.22em; text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 18px;
+        }
+        .hero-eyebrow::before {
+            content: ''; display: block;
+            width: 26px; height: 1px; background: var(--accent);
+        }
+
+        .hero-title {
+            position: relative; z-index: 1;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: clamp(4.5rem, 11vw, 9.5rem);
+            line-height: 0.88;
+            letter-spacing: 0.02em;
+            text-transform: uppercase;
+            margin-bottom: 44px;
+        }
+
+        .hero-title .outline {
+            -webkit-text-stroke: 1px rgba(255,255,255,0.2);
+            color: transparent;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .hero-title:hover .outline {
+            -webkit-text-stroke: 1px var(--accent);
+            text-shadow: 0 0 30px rgba(212, 175, 55, 0.25);
+            color: rgba(212, 175, 55, 0.05);
+        }
+
+        .hero-foot {
+            position: relative; z-index: 1;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            gap: 40px;
+            padding-top: 32px;
+            border-top: 1px solid var(--border);
+        }
+
+        .hero-desc {
+            max-width: 450px;
+            color: var(--muted);
+            font-size: 0.9rem;
+            font-weight: 300;
+            line-height: 1.9;
+        }
+        .hero-desc strong { color: var(--white); font-weight: 500; }
+
+        .hero-ctas { display: flex; gap: 12px; flex-shrink: 0; }
+
+        /* ─── BUTTONS ─── */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 14px 28px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.13em;
+            text-transform: uppercase;
+            text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            border: none;
+            cursor: pointer;
+        }
+        .btn-white { background: var(--white); color: var(--black); }
+        .btn-white:hover { 
+            background: var(--accent); 
+            box-shadow: 0 0 25px rgba(212, 175, 55, 0.35); 
+            color: #000;
+            transform: translateY(-2px);
+        }
+        .btn-ghost { background: transparent; color: var(--white); border: 1px solid var(--border2); }
+        .btn-ghost:hover { 
+            border-color: var(--accent); 
+            color: var(--accent);
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.1);
+            transform: translateY(-2px);
+        }
+
+        /* ─── TICKER ─── */
+        .ticker {
+            overflow: hidden;
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            background: var(--surface);
+            padding: 14px 0;
+        }
+
+        .ticker-track {
+            display: flex;
+            gap: 0;
+            white-space: nowrap;
+            animation: ticker-scroll 22s linear infinite;
+            width: max-content;
+        }
+
+        @keyframes ticker-scroll {
+            from { transform: translateX(0); }
+            to   { transform: translateX(-50%); }
+        }
+
+        .ticker-item {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 0.95rem;
+            letter-spacing: 0.18em;
+            color: var(--muted);
+            text-transform: uppercase;
+            padding: 0 28px;
+        }
+        .ticker-item.highlight { color: var(--accent); }
+
+        .ticker-sep {
+            font-size: 0.5rem;
+            color: var(--muted2);
+            display: flex;
+            align-items: center;
+        }
+
+        /* ─── SECTION SHELL ─── */
+        .sec { padding: 110px 60px; }
+
+        .sec-label {
+            display: flex; align-items: center; gap: 14px;
+            font-size: 0.68rem; font-weight: 600;
+            letter-spacing: 0.22em; text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 12px;
+        }
+        .sec-label::before {
+            content: ''; display: block;
+            width: 18px; height: 1px; background: var(--accent);
+        }
+
+        .sec-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: clamp(2.6rem, 4.5vw, 3.8rem);
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            line-height: 1;
+            margin-bottom: 20px;
+        }
+        
+        .sec-subtitle {
+            font-size: 0.88rem;
+            color: var(--muted);
+            margin-bottom: 56px;
+            max-width: 650px;
+            line-height: 1.7;
+        }
+
+        /* ─── SERVICES ─── */
+        #services {
+            background: var(--surface);
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .svc-group-label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--accent);
+            padding: 50px 0 16px;
+            border-bottom: 1px solid var(--border2);
+            margin-top: 30px;
+        }
+        .svc-group-label:first-of-type { margin-top: 0; padding-top: 0; }
+
+        .svc-row {
+            display: grid;
+            grid-template-columns: 40px 1.2fr 1.8fr 2.2fr;
+            align-items: center;
+            gap: 32px;
+            padding: 30px 0;
+            border-bottom: 1px solid var(--border);
+            position: relative;
+            transition: background 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .svc-row::after {
+            content: '';
+            position: absolute;
+            bottom: -1px; left: 0;
+            width: 0; height: 1px;
+            background: var(--accent);
+            transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .svc-row:hover {
+            background: rgba(255, 255, 255, 0.01);
+        }
+        .svc-row:hover::after { width: 100%; }
+        .svc-row:hover .svc-num { color: var(--accent); }
+        .svc-row:hover .svc-name { color: var(--white); }
+
+        .svc-num {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1rem;
+            color: var(--muted2);
+            letter-spacing: 0.05em;
+            transition: color 0.3s;
+        }
+
+        .svc-name {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.5rem;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            line-height: 1.1;
+            color: #d0d0d0;
+            transition: color 0.3s;
+        }
+
+        .svc-desc {
+            font-size: 0.82rem;
+            color: var(--muted);
+            line-height: 1.75;
+            font-weight: 300;
+            padding-right: 15px;
+        }
+
+        .svc-tag {
+            display: inline-block;
+            font-size: 0.55rem;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--accent);
+            border: 1px solid rgba(212, 175, 55, 0.25);
+            background: rgba(212, 175, 55, 0.04);
+            padding: 3px 8px;
+            margin-top: 6px;
+            vertical-align: middle;
+            border-radius: 2px;
+        }
+
+        .svc-offer-tag {
+            display: inline-block;
+            font-size: 0.55rem;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: #fff;
+            border: 1px solid rgba(212, 175, 55, 0.4);
+            background: linear-gradient(135deg, rgba(212,175,55,0.2), rgba(212,175,55,0.05));
+            padding: 4px 9px;
+            margin-top: 6px;
+            border-radius: 2px;
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.1);
+        }
+
+        /* ─── DYNAMIC PRICE GRID ─── */
+        .svc-prices-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            justify-content: right;
+        }
+        @media (min-width: 1200px) {
+            .svc-prices-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        .price-chip {
+            background: rgba(255, 255, 255, 0.01);
+            border: 1px solid var(--border);
+            padding: 8px 12px;
+            border-radius: 3px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .svc-row:hover .price-chip {
+            border-color: rgba(255, 255, 255, 0.05);
+        }
+        .price-chip:hover {
+            border-color: var(--accent) !important;
+            background: rgba(212, 175, 55, 0.05) !important;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.15);
+            transform: scale(1.03);
+        }
+        .price-chip .cat-label {
+            font-size: 0.55rem;
+            text-transform: uppercase;
+            color: var(--muted);
+            letter-spacing: 0.06em;
+            margin-bottom: 2px;
+            text-align: center;
+            font-weight: 500;
+        }
+        .price-chip:hover .cat-label {
+            color: var(--white);
+        }
+        .price-chip .cat-val {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.35rem;
+            color: var(--white);
+            letter-spacing: 0.02em;
+            line-height: 1;
+        }
+        .price-chip .cat-val span {
+            color: var(--accent);
+        }
+
+        /* ─── CONTACT ─── */
+        #contact {
+            background: var(--surface2);
+            border-top: 1px solid var(--border);
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+        }
+
+        .contact-channels { display: flex; flex-direction: column; gap: 16px; }
+
+        .contact-link {
+            display: flex;
+            align-items: center;
+            gap: 22px;
+            padding: 26px 28px;
+            border: 1px solid var(--border);
+            background: var(--black);
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .contact-link:hover { 
+            border-color: var(--accent); 
+            background: #0d0d0d; 
+            transform: translateY(-2px); 
+            box-shadow: 0 5px 20px rgba(0,0,0,0.4);
+        }
+
+        .contact-link-icon { font-size: 1.5rem; flex-shrink: 0; color: var(--accent); }
+
+        .contact-link-type {
+            display: block;
+            font-size: 0.65rem;
+            font-weight: 600;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 5px;
+        }
+        .contact-link-val { font-size: 0.95rem; color: var(--white); font-weight: 500; }
+
+        /* ─── FOOTER ─── */
+        footer {
+            padding: 30px 60px;
+            background: var(--black);
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        footer p { font-size: 0.7rem; color: var(--muted2); letter-spacing: 0.05em; text-transform: uppercase; }
+
+        /* ─── RESPONSIVE ─── */
+        @media (max-width: 1024px) {
+            nav { padding: 16px 30px; }
+            .nav-links { gap: 24px; }
+            .svc-row {
+                grid-template-columns: 40px 1.5fr 2fr;
+                grid-template-rows: auto auto;
+                gap: 16px;
+                padding: 30px 0;
+            }
+            .svc-prices-grid {
+                grid-column: 2 / -1;
+                grid-row: 2;
+                justify-content: start;
+                grid-template-columns: repeat(4, 1fr);
+            }
+            .svc-desc { padding-right: 0; }
+        }
+
+        @media (max-width: 768px) {
+            nav { padding: 16px 24px; }
+            .nav-links { display: none; }
+
+            .hero { padding: 0 24px 60px; background-size: 22px 22px; }
+            .hero-title { font-size: clamp(3.6rem, 16vw, 6.5rem); }
+            .hero-foot { flex-direction: column; align-items: flex-start; gap: 24px; }
+            .hero-ctas { width: 100%; }
+            .hero-ctas .btn { flex: 1; text-align: center; justify-content: center; }
+
+            .sec { padding: 80px 24px; }
+            
+            .svc-row {
+                grid-template-columns: 1fr;
+                gap: 12px;
+                padding: 24px 0;
+            }
+            .svc-num { display: none; }
+            .svc-prices-grid {
+                grid-column: 1;
+                grid-row: 3;
+                grid-template-columns: repeat(2, 1fr);
+                width: 100%;
+            }
+
+            .contact-grid { grid-template-columns: 1fr; gap: 40px; }
+            footer { flex-direction: column; gap: 12px; padding: 30px 24px; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ═══ NAV ═══ -->
+<nav>
+    <a href="#home" class="nav-logo">1337 <span>Detailing</span></a>
+    <ul class="nav-links">
+        <li><a href="#services">Prestations</a></li>
+        <li><a href="#contact">Contact</a></li>
+    </ul>
+</nav>
+
+<!-- ═══ HERO ═══ -->
+<section class="hero" id="home">
+    <div class="hero-eyebrow">Soufflenheim & Alentours</div>
+    <h1 class="hero-title">
+        La<br>
+        <span class="outline">finition</span><br>
+        parfaite.
+    </h1>
+    <div class="hero-foot">
+        <p class="hero-desc">
+            Détailing professionnel de prestige. <strong>Intervention directement chez vous</strong> à Soufflenheim et alentours pour sublimer l'esthétique de votre véhicule grâce à notre expertise de pointe.
+        </p>
+        <div class="hero-ctas">
+            <a href="#services" class="btn btn-white">Voir les tarifs</a>
+            <a href="#contact"  class="btn btn-ghost">Prendre RDV</a>
+        </div>
+    </div>
+</section>
+
+<!-- ═══ TICKER ═══ -->
+<div class="ticker">
+    <div class="ticker-track">
+        <span class="ticker-item">Lavage Premium</span><span class="ticker-sep">·</span>
+        <span class="ticker-item highlight">Intervention à domicile</span><span class="ticker-sep">·</span>
+        <span class="ticker-item">Correction peinture</span><span class="ticker-sep">·</span>
+        <span class="ticker-item">Céramique</span><span class="ticker-sep">·</span>
+        <span class="ticker-item">Effet miroir</span><span class="ticker-sep">·</span>
+        <span class="ticker-item">Soufflenheim</span><span class="ticker-sep">·</span>
+        <span class="ticker-item">1337 Detailing</span><span class="ticker-sep">·</span>
+        <!-- Boucle (infinite scroll smoothness) -->
+        <span class="ticker-item">Lavage Premium</span><span class="ticker-sep">·</span>
+        <span class="ticker-item highlight">Intervention à domicile</span><span class="ticker-sep">·</span>
+        <span class="ticker-item">Correction peinture</span><span class="ticker-sep">·</span>
+        <span class="ticker-item">Céramique</span><span class="ticker-sep">·</span>
+        <span class="ticker-item">Effet miroir</span><span class="ticker-sep">·</span>
+        <span class="ticker-item">Soufflenheim</span><span class="ticker-sep">·</span>
+        <span class="ticker-item">1337 Detailing</span><span class="ticker-sep">·</span>
+    </div>
+</div>
+
+<!-- ═══ SERVICES ═══ -->
+<section class="sec" id="services">
+    <div class="sec-label">Tarification</div>
+    <h2 class="sec-title">Nos prestations</h2>
+    <p class="sec-subtitle">Découvrez notre grille tarifaire transparente et rigoureuse, spécifiquement adaptée à chaque catégorie de carrosserie. Un devis de précision sera validé avant toute intervention.</p>
+
+    <!-- GROUPE 1 : LAVAGE -->
+    <div class="svc-group-label reveal">Formules Lavage</div>
+
+    <div class="svc-row reveal">
+        <div class="svc-num">01</div>
+        <div class="svc-name">Lavage Extérieur</div>
+        <div class="svc-desc">Nettoyage minutieux technique des deux seaux de la carrosserie, des passages de roues, jantes et vitres extérieures. <span class="svc-tag">Finition brillante</span></div>
+        <div class="svc-prices-grid">
+            <div class="price-chip"><span class="cat-label">Moto</span><span class="cat-val">30€</span></div>
+            <div class="price-chip"><span class="cat-label">Citadine</span><span class="cat-val">35€</span></div>
+            <div class="price-chip"><span class="cat-label">Berline/Break</span><span class="cat-val">40€</span></div>
+            <div class="price-chip"><span class="cat-label">SUV / 4x4</span><span class="cat-val">50€</span></div>
+        </div>
+    </div>
+
+    <div class="svc-row reveal">
+        <div class="svc-num">02</div>
+        <div class="svc-name">Lavage Intérieur</div>
+        <div class="svc-desc">Aspiration complète en profondeur, dépoussiérage et dégraissage méticuleux des plastiques, traitement protecteur des surfaces et vitres intérieures.</div>
+        <div class="svc-prices-grid">
+            <div class="price-chip"><span class="cat-label">Moto</span><span class="cat-val">—</span></div>
+            <div class="price-chip"><span class="cat-label">Citadine</span><span class="cat-val">50€</span></div>
+            <div class="price-chip"><span class="cat-label">Berline/Break</span><span class="cat-val">60€</span></div>
+            <div class="price-chip"><span class="cat-label">SUV / 4x4</span><span class="cat-val">65€</span></div>
+        </div>
+    </div>
+
+    <div class="svc-row reveal">
+        <div class="svc-num">03</div>
+        <div class="svc-name">Lavage Extérieur + Intérieur</div>
+        <div class="svc-desc">La synergie parfaite pour restaurer l'éclat global de votre véhicule. <span class="svc-tag">Économie de -20% incluse</span></div>
+        <div class="svc-prices-grid">
+            <div class="price-chip"><span class="cat-label">Moto</span><span class="cat-val">—</span></div>
+            <div class="price-chip"><span class="cat-label">Citadine</span><span class="cat-val">68€</span></div>
+            <div class="price-chip"><span class="cat-label">Berline/Break</span><span class="cat-val">80€</span></div>
+            <div class="price-chip"><span class="cat-label">SUV / 4x4</span><span class="cat-val">92€</span></div>
+        </div>
+    </div>
+
+    <!-- GROUPE 2 : CORRECTION & PROTECTION -->
+    <div class="svc-group-label reveal">Correction & Protection</div>
+
+    <div class="svc-row reveal">
+        <div class="svc-num">04</div>
+        <div class="svc-name">Lustrage Effet Miroir</div>
+        <div class="svc-desc">Procédé de finition visant à intensifier la brillance, éliminer l'oxydation de surface et apporter une profondeur incroyable au vernis.</div>
+        <div class="svc-prices-grid">
+            <div class="price-chip"><span class="cat-label">Moto</span><span class="cat-val">60€</span></div>
+            <div class="price-chip"><span class="cat-label">Citadine</span><span class="cat-val">100€</span></div>
+            <div class="price-chip"><span class="cat-label">Berline/Break</span><span class="cat-val">115€</span></div>
+            <div class="price-chip"><span class="cat-label">SUV / 4x4</span><span class="cat-val">130€</span></div>
+        </div>
+    </div>
+
+    <div class="svc-row reveal">
+        <div class="svc-num">05</div>
+        <div class="svc-name">Correction Peinture Niveaux 1</div>
+        <div class="svc-desc">Élimination des micro-rayures superficielles légères et des défauts mineurs pour redonner une clarté optique au vernis. <br><span class="svc-offer-tag">Offre : -50% sur la Cire Synthétique</span></div>
+        <div class="svc-prices-grid">
+            <div class="price-chip"><span class="cat-label">Moto</span><span class="cat-val">90€</span></div>
+            <div class="price-chip"><span class="cat-label">Citadine</span><span class="cat-val">150€</span></div>
+            <div class="price-chip"><span class="cat-label">Berline/Break</span><span class="cat-val">170€</span></div>
+            <div class="price-chip"><span class="cat-label">SUV / 4x4</span><span class="cat-val">190€</span></div>
+        </div>
+    </div>
+
+    <div class="svc-row reveal">
+        <div class="svc-num">06</div>
+        <div class="svc-name">Correction Peinture Niveaux 2</div>
+        <div class="svc-desc">Polissage intensif multi-étapes supprimant la grande majorité des micro-rayures installées et des hologrammes profonds.<br><span class="svc-offer-tag">Offre : -50% sur la Cire Synthétique</span></div>
+        <div class="svc-prices-grid">
+            <div class="price-chip"><span class="cat-label">Moto</span><span class="cat-val">130€</span></div>
+            <div class="price-chip"><span class="cat-label">Citadine</span><span class="cat-val">200€</span></div>
+            <div class="price-chip"><span class="cat-label">Berline/Break</span><span class="cat-val">240€</span></div>
+            <div class="price-chip"><span class="cat-label">SUV / 4x4</span><span class="cat-val">280€</span></div>
+        </div>
+    </div>
+
+    <div class="svc-row reveal">
+        <div class="svc-num">07</div>
+        <div class="svc-name">Traitement Céramique</div>
+        <div class="svc-desc">Bouclier de protection moléculaire longue durée. Offre un effet hydrophobe extrême et protège contre les agressions extérieures.</div>
+        <div class="svc-prices-grid">
+            <div class="price-chip"><span class="cat-label">Moto</span><span class="cat-val">80€</span></div>
+            <div class="price-chip"><span class="cat-label">Citadine</span><span class="cat-val">100€</span></div>
+            <div class="price-chip"><span class="cat-label">Berline/Break</span><span class="cat-val">130€</span></div>
+            <div class="price-chip"><span class="cat-label">SUV / 4x4</span><span class="cat-val">160€</span></div>
+        </div>
+    </div>
+
+    <div class="svc-row reveal">
+        <div class="svc-num">08</div>
+        <div class="svc-name">Cire Synthétique Longue Durée</div>
+        <div class="svc-desc">Application d'un scellant protecteur haute technologie assurant une superbe brillance hydrophobe. <br><span class="svc-tag">Obtenez -50% si couplé à une correction</span></div>
+        <div class="svc-prices-grid">
+            <div class="price-chip"><span class="cat-label">Moto</span><span class="cat-val">25€</span></div>
+            <div class="price-chip"><span class="cat-label">Citadine</span><span class="cat-val">40€</span></div>
+            <div class="price-chip"><span class="cat-label">Berline/Break</span><span class="cat-val">50€</span></div>
+            <div class="price-chip"><span class="cat-label">SUV / 4x4</span><span class="cat-val">70€</span></div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══ CONTACT ═══ -->
+<section class="sec reveal" id="contact">
+    <div class="sec-label">Contact</div>
+    <h2 class="sec-title">Prendre rendez-vous</h2>
+    <p class="sec-subtitle">Contactez-nous directement pour convenir d'une date d'intervention ou obtenir une étude personnalisée.</p>
+
+    <div class="contact-grid">
+        <div class="contact-channels">
+            <a href="mailto:1337Detailing@protonmail.com" class="contact-link">
+                <div class="contact-link-icon">✉</div>
+                <div>
+                    <span class="contact-link-type">Email</span>
+                    <span class="contact-link-val">1337Detailing@protonmail.com</span>
+                </div>
+            </a>
+
+            <a href="https://instagram.com/1337_Detailing_" target="_blank" class="contact-link">
+                <div class="contact-link-icon">📷</div>
+                <div>
+                    <span class="contact-link-type">Instagram</span>
+                    <span class="contact-link-val">@1337_Detailing_</span>
+                </div>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- ═══ FOOTER ═══ -->
+<footer>
+    <p>1337 Detailing</p>
+    <p>Soufflenheim & alentours</p>
+</footer>
+
+<!-- ═══ ANIMATION SCRIPT (SCROLL REVEAL) ═══ -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const revealElements = document.querySelectorAll(".reveal");
+        
+        const revealOnScroll = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add("active");
+                    observer.unobserve(entry.target); // Lance l'animation une seule fois
+                }
+            });
+        }, {
+            threshold: 0.05, // Se déclenche dès que 5% de l'élément est visible
+            rootMargin: "0px 0px -40px 0px"
+        });
+
+        revealElements.forEach(el => {
+            revealOnScroll.observe(el);
+        });
+    });
+</script>
+
+</body>
+</html>
