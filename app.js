@@ -197,6 +197,9 @@ function loadSdkAndViewer() {
       const client=new window.Sketchfab('1.12.1',iframe);
       initialized=true;
       clearTimeout(fallbackTimer);
+      // If the SDK initialized but the remote render never becomes ready,
+      // give the visitor the standard player instead of a permanent loader.
+      const viewerWatchdog=setTimeout(()=>{if(!viewerReady)useDirectEmbed();},14000);
       client.init(E39_MODEL,{
         autostart:1,
         autospin:reduceMotion.matches?0:.12,
@@ -210,11 +213,14 @@ function loadSdkAndViewer() {
           viewerApi=api;
           api.start();
           api.addEventListener('viewerready',()=>{
+            clearTimeout(viewerWatchdog);
+            try { api.setBackground({color:[.035,.034,.029]}); } catch {}
             onViewerReady();
             configureAuthenticFinish();
           });
         },
         error(){
+          clearTimeout(viewerWatchdog);
           console.warn('3D viewer initialization failed; loading direct embed.');
           useDirectEmbed();
         }
