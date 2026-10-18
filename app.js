@@ -1,4 +1,4 @@
-/* 1337 Detailing · An original procedural 3D car, with progressive enhancement. */
+/* 1337 Detailing · Bespoke BMW E39-inspired atelier, with progressive enhancement. */
 const $ = (selector, scope = document) => scope.querySelector(selector);
 const $$ = (selector, scope = document) => [...scope.querySelectorAll(selector)];
 const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)');
@@ -100,18 +100,22 @@ function initStudio(T) {
   renderer.setPixelRatio(Math.min(devicePixelRatio, smallScreen ? 1.35 : 1.8));
   renderer.outputColorSpace = T.SRGBColorSpace;
   renderer.toneMapping = T.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.65;
+  renderer.toneMappingExposure = 1.44;
   renderer.setClearColor(0x0a0a09, 0);
 
   const mat = (color, roughness = .5, metalness = 0, more = {}) => new T.MeshPhysicalMaterial({ color, roughness, metalness, ...more });
-  const paint = mat(0x242622, .25, .56, { clearcoat: 1, clearcoatRoughness: .08, envMapIntensity: 1.65 });
-  const trim = mat(0x0c0e0f, .24, .5, { envMapIntensity: 1.8 });
+  const paint = mat(0x050609, .24, .76, { clearcoat: 1, clearcoatRoughness: .075, envMapIntensity: 3.0 });
+  const trim = mat(0x08090a, .26, .32, { envMapIntensity: 1.65 });
   const rubber = mat(0x111211, .92, .03);
-  const blackGlass = mat(0x101a1b, .12, .48, { clearcoat: 1, envMapIntensity: 2.4, side: T.DoubleSide });
-  const silver = mat(0x8b8a82, .22, .88, { envMapIntensity: 2.2 });
+  const blackGlass = mat(0x09151b, .085, .40, { clearcoat: 1, envMapIntensity: 2.75, side: T.DoubleSide });
+  const silver = mat(0xc2c7c9, .085, 1, { envMapIntensity: 3.4 });
   const sand = mat(0xc6ad79, .24, .68, { envMapIntensity: 2.0 });
-  const lamps = new T.MeshBasicMaterial({ color: 0xe4dac3, toneMapped: false });
-  const rearLamp = mat(0x776350, .24, .42, { emissive: 0x342820, emissiveIntensity: .4 });
+  const lamps = new T.MeshBasicMaterial({ color: 0xfff2d1, toneMapped: false });
+  const haloMat = new T.MeshBasicMaterial({ color: 0xfff6d8, toneMapped: false });
+  const haloSoft = new T.MeshBasicMaterial({ color: 0xffe8aa, transparent: true, opacity: .24, blending: T.AdditiveBlending, depthWrite: false, toneMapped: false });
+  const chromeDark = mat(0x565e66, .15, .93, { envMapIntensity: 2.65 });
+  const crystal = mat(0xb7d6e0, .08, .3, { transparent: true, opacity: .35, depthWrite: false, side: T.DoubleSide });
+  const rearLamp = mat(0x8f1117, .17, .32, { emissive: 0x560408, emissiveIntensity: .95 });
 
   // A custom lightbox environment reflected directly in the car's clearcoat.
   // This makes readable automotive-style panel reflections without loading an HDRI.
@@ -121,9 +125,11 @@ function initStudio(T) {
   const warmMat = new T.MeshBasicMaterial({ color: 0x9b8d70, side: T.DoubleSide, toneMapped: false });
   for (const [x, y, z, w, h, angle, material] of [
     [-2.8, 3.5, -4.2, 2.3, 5.5, .34, panelMat],
+    [-4.8, 2.7,  1.8, 1.05, 5.1, .3, panelMat],
     [ 3.4, 2.9, -2.5, 1.1, 5.8, -.24, warmMat],
     [-1.0, 6.1,  2.5, 7.0, 1.0, -.1, panelMat],
     [ 1.3, 2.9,  5.0, 4.6, 2.0, -.32, warmMat],
+    [ 0.5, 4.9, -0.4, 4.2, .55, -.15, panelMat],
   ]) {
     const rect = new T.Mesh(new T.PlaneGeometry(w, h), material);
     rect.position.set(x, y, z); rect.rotation.y = angle;
@@ -155,110 +161,192 @@ function initStudio(T) {
     geo.setIndex([0,1,2,0,2,3]); geo.computeVertexNormals();
     return mesh(geo, material, parent);
   }
-  // Lower chassis: wheel wells are CUT into the side silhouette, not masked by discs.
+  // E39 sedan proportions: squared shoulders, long bonnet, separate boot and C-pillar.
+  // This self-contained interpretation is constructed from real 3D geometry, not a flat image.
   const profile = new T.Shape();
-  profile.moveTo(-2.27, .56);
+  profile.moveTo(-2.29, .54);
   function arch(cx) {
-    const r = .5, cy = .57;
-    for (let i = 0; i <= 20; i++) {
-      const a = Math.PI - i * Math.PI / 20;
+    const r = .50, cy = .56;
+    for (let i = 0; i <= 24; i++) {
+      const a = Math.PI - i * Math.PI / 24;
       profile.lineTo(cx + Math.cos(a) * r, cy + Math.sin(a) * r);
     }
   }
-  profile.lineTo(-1.99, .56); arch(-1.49);
-  profile.lineTo(.97, .56); arch(1.47);
-  profile.lineTo(2.24, .56);
-  profile.quadraticCurveTo(2.35, .59, 2.31, .81);
-  profile.lineTo(2.25, 1.21);
-  profile.quadraticCurveTo(1.75, 1.33, 1.17, 1.36);
-  profile.lineTo(-1.82, 1.27);
-  profile.quadraticCurveTo(-2.21, 1.22, -2.27, 1.08);
-  profile.lineTo(-2.27, .56);
-  const chassis = mesh(new T.ExtrudeGeometry(profile, { depth: 1.99, bevelEnabled: true, bevelThickness: .055, bevelSize: .055, bevelSegments: 4, curveSegments: 24 }), paint);
-  chassis.position.z = -.995;
-  // Body roof/cabin, shaped from side as a continuous aerodynamic canopy.
-  const canopy = new T.Shape();
-  canopy.moveTo(-1.69, 1.27); canopy.lineTo(-1.21, 1.94);
-  canopy.quadraticCurveTo(-1.08, 2.06, -.87, 2.08);
-  canopy.lineTo(.49, 2.08);
-  canopy.quadraticCurveTo(.72, 2.07, .82, 1.91);
-  canopy.lineTo(1.32, 1.32);
-  canopy.lineTo(-1.69, 1.27);
-  const roof = mesh(new T.ExtrudeGeometry(canopy,{ depth: 1.79,bevelEnabled:true,bevelThickness:.035,bevelSize:.035,bevelSegments:3,curveSegments:18 }), paint);
-  roof.position.z = -.895;
-  // Window plane detailing is set just beyond the roof surface to prevent z-fighting.
-  for (const side of [-1, 1]) {
-    const outer = side * .939;
-    polygon([[-1.44,1.42,outer],[-1.07,1.91,outer],[-.34,1.91,outer],[-.35,1.41,outer]], blackGlass);
-    polygon([[-.27,1.41,outer],[-.25,1.91,outer],[.54,1.91,outer],[1.02,1.41,outer]], blackGlass);
-    // Chrome glazing border, B-pillar and tinted windshield trim.
-    line([[-1.5,1.37,outer + side*.01],[-1.09,1.98,outer + side*.01],[.6,1.98,outer + side*.01],[1.14,1.35,outer + side*.01]], silver, .012);
-    line([[-.3,1.36,outer + side*.01],[-.31,1.98,outer + side*.01]], trim, .028);
-    line([[-1.83,1.22,side*1.034],[-.95,1.23,side*1.038],[1.12,1.25,side*1.038],[2.04,1.17,side*1.035]], silver, .012);
-    line([[-.3,1.2,side*1.048],[-.29,.76,side*1.048]], trim, .012);
-    line([[.0,1.2,side*1.052],[.42,1.19,side*1.052]], silver, .017);
-    line([[-.65,1.33,side*1.05],[-.28,1.33,side*1.05]], trim, .011);
-    // Sculpted wheel arch edges.
-    for (const cx of [-1.49, 1.47]) {
-      const arcPoints = [];
-      for (let n=0; n<=15;n++) { const a = Math.PI - Math.PI*n/15; arcPoints.push([cx + Math.cos(a)*.52, .57+Math.sin(a)*.52,side*1.05]); }
-      line(arcPoints, trim, .023);
+  profile.lineTo(-2.00, .54); arch(-1.50);
+  profile.lineTo(.93, .54); arch(1.43);
+  profile.lineTo(2.24, .54);
+  profile.quadraticCurveTo(2.37, .61, 2.32, .85);
+  profile.lineTo(2.28, 1.255);
+  profile.quadraticCurveTo(1.85, 1.37, 1.20, 1.355);
+  profile.lineTo(-1.48, 1.33);
+  profile.quadraticCurveTo(-2.05, 1.295, -2.29, 1.20);
+  profile.lineTo(-2.29, .54);
+  const shell = mesh(new T.ExtrudeGeometry(profile,{
+    depth: 1.99, bevelEnabled: true, bevelThickness: .045,
+    bevelSize: .044, bevelSegments: 4, curveSegments: 25
+  }),paint);
+  shell.position.z=-.995;
+
+  const cabin = new T.Shape();
+  cabin.moveTo(-1.46,1.32);
+  cabin.lineTo(-1.07,1.895);
+  cabin.quadraticCurveTo(-.95,2.052,-.76,2.06);
+  cabin.lineTo(.51,2.06);
+  cabin.quadraticCurveTo(.67,2.06,.80,1.917);
+  cabin.lineTo(1.19,1.345);
+  cabin.lineTo(-1.46,1.32);
+  const roof=mesh(new T.ExtrudeGeometry(cabin,{
+    depth:1.81,bevelEnabled:true,bevelThickness:.033,bevelSize:.029,
+    bevelSegments:3,curveSegments:20
+  }),paint);
+  roof.position.z=-.905;
+  // Four individually modelled side windows, chrome trim, B-pillars and door lines.
+  for(const side of [-1,1]){
+    const z=side*.954;
+    polygon([[-1.24,1.45,z],[-.97,1.91,z],[-.28,1.925,z],[-.29,1.45,z]],blackGlass);
+    polygon([[-.24,1.45,z],[-.23,1.925,z],[.53,1.925,z],[.97,1.45,z]],blackGlass);
+    line([[-1.43,1.385,z+side*.015],[-1.00,1.985,z+side*.015],[.58,1.985,z+side*.015],[1.125,1.382,z+side*.015]],silver,.012);
+    line([[-.27,1.43,z+side*.019],[-.27,1.965,z+side*.019]],trim,.037);
+    line([[-1.43,1.39,z+side*.025],[1.11,1.39,z+side*.025]],silver,.016);
+    // E39 rubbing strip, lower sill, four door handles.
+    line([[-2.19,.91,side*1.050],[-1.91,.915,side*1.055],[-.16,.925,side*1.057],[1.06,.932,side*1.058],[2.19,.951,side*1.049]],trim,.035);
+    line([[-2.15,.882,side*1.062],[2.08,.926,side*1.062]],chromeDark,.009);
+    line([[-.20,1.28,side*1.057],[-.20,.74,side*1.059]],trim,.013);
+    line([[-1.93,1.25,side*1.052],[-1.96,.74,side*1.056]],trim,.012);
+    for(const hx of [-1.53,.15]){
+      box(.32,.024,.025,silver,hx,1.19,side*1.077);
+      box(.21,.033,.018,trim,hx,1.175,side*1.095);
     }
-    // Mirror housing with curved stem, outside the front window.
-    line([[.68,1.32,side*.98],[.78,1.44,side*1.18]], trim, .027);
-    const mirror = mesh(new T.SphereGeometry(.16,18,12), paint); mirror.scale.set(1.45,.56,.7); mirror.position.set(.77,1.47,side*1.22);
-    const mirrorGlass = box(.18,.072,.015,trim,.75,1.46,side*1.31); mirrorGlass.rotation.z=.12;
+    for(const cx of [-1.50,1.43]){
+      const arc=[];
+      for(let n=0;n<=20;n++){const a=Math.PI-Math.PI*n/20;arc.push([cx+Math.cos(a)*.515,.56+Math.sin(a)*.515,side*1.052]);}
+      line(arc,chromeDark,.012);
+    }
+    // E39 door mirrors with paint shells and dark mirror glasses.
+    line([[.75,1.38,side*.94],[.83,1.45,side*1.17]],trim,.027);
+    const mirror=mesh(new T.SphereGeometry(.16,20,14),paint);
+    mirror.scale.set(1.35,.65,.68);mirror.position.set(.84,1.48,side*1.19);
+    const mirrorFace=box(.17,.092,.014,blackGlass,.84,1.47,side*1.30);
+    mirrorFace.rotation.z=-.1;
+    // Front and rear bumper separation lines, sculpted side skirts.
+    line([[2.29,.77,side*1.001],[2.13,.72,side*1.046]],chromeDark,.008);
+    box(2.0,.058,.13,trim,-.07,.54,side*1.012);
+    // Amber side indicator in the front wing.
+    box(.15,.047,.013,mat(0xd9a35a,.19,.22,{emissive:0x473008,emissiveIntensity:.25}),1.04,1.12,side*1.071);
   }
-  // Windshield, rear window and roof seams.
-  polygon([[.59,1.99,-.84],[1.19,1.36,-.93],[1.19,1.36,.93],[.59,1.99,.84]], blackGlass);
-  polygon([[-1.12,1.99,.84],[-1.54,1.37,.9],[-1.54,1.37,-.9],[-1.12,1.99,-.84]], blackGlass);
-  line([[.59,1.99,-.86],[1.2,1.37,-.93]], trim, .029);
-  line([[.59,1.99,.86],[1.2,1.37,.93]], trim, .029);
-  line([[.7,1.97,-.8],[.7,1.97,.8]], silver, .009);
-  // Front fascia / realistic layered grille / bumper aperture.
-  box(.064,.34,1.17,trim,2.306,.92,0);
-  for (let j=0;j<7;j++) box(.069,.012,1.04,silver,2.346,.78+j*.047,0);
-  box(.12,.14,1.6,trim,2.274,.64,0);
-  for (const z of [-.79,.79]) {
-    const lamp=box(.12,.13,.47,blackGlass,2.253,1.16,z);lamp.rotation.x=z>0?-.08:.08;
-    line([[2.324,1.19,z-.21],[2.329,1.19,z+.21]], lamps,.018);
-    const frontAir=box(.091,.105,.28,trim,2.31,.72,z);
-    frontAir.rotation.y=z>0?-.045:.045;
-    box(.13,.125,.34,rearLamp,-2.298,1.09,z);
-    // Two exhaust outlets and lower diffuser.
-    const pipe=mesh(new T.TorusGeometry(.075,.021,8,20),silver);pipe.position.set(-2.31,.61,z*.82);pipe.rotation.y=Math.PI/2;
+  // Windscreen and the distinct short boot of the E39 saloon.
+  polygon([[.57,1.994,-.835],[1.092,1.415,-.927],[1.092,1.415,.927],[.57,1.994,.835]],blackGlass);
+  polygon([[-1.04,1.992,.84],[-1.39,1.408,.925],[-1.39,1.408,-.925],[-1.04,1.992,-.84]],blackGlass);
+  line([[.57,1.994,-.85],[1.11,1.408,-.94]],trim,.023);
+  line([[.57,1.994,.85],[1.11,1.408,.94]],trim,.023);
+  line([[-1.08,2.07,-.78],[.54,2.07,-.78],[.54,2.07,.78],[-1.08,2.07,.78]],silver,.007);
+  // Crisp bonnet/boot pressing lines and E39 chrome belt line.
+  for(const z of [-.67,.67]){
+    line([[1.19,1.365,z],[1.56,1.355,z*.99],[2.22,1.285,z*.91]],chromeDark,.007);
+    line([[-2.22,1.223,z*.92],[-1.49,1.34,z]],chromeDark,.008);
   }
-  // Hood and boot character lines reveal the form in grazing light.
-  for(const z of [-.69,.69]) {
-    line([[1.24,1.342,z],[1.63,1.324,z*.93],[2.18,1.243,z*.88]],trim,.008);
-    line([[-2.15,1.19,z*.88],[-1.78,1.29,z]],trim,.008);
+  const bumper=box(.15,.32,1.83,paint,2.31,.76,0);
+  const bumperRear=box(.14,.31,1.89,paint,-2.30,.77,0);
+  // A true twin-kidney front grille with individually separated vertical slats.
+  for(const side of [-1,1]){
+    const cz=side*.147, x=2.405;
+    const grille=box(.06,.325,.255,trim,2.361,1.025,cz);
+    const kidney=[];
+    for(let k=0;k<=24;k++){
+      const a=k*Math.PI*2/24;
+      kidney.push([x,1.025+Math.sin(a)*.18,cz+Math.cos(a)*(.122-(Math.sin(a)>0?.014:0))]);
+    }
+    line(kidney,silver,.022);
+    for(let k=-2;k<=2;k++)line([[x+.001,.88,cz+k*.04],[x+.001,1.166,cz+k*.04]],chromeDark,.010);
   }
-  // Detailed multi-material forged wheels with rotors, rim lips, six metal spokes.
-  for(const x of [-1.49,1.47]) for(const side of [-1,1]) {
-    const wheel=new T.Group(); car.add(wheel); wheel.position.set(x,.58,side*1.09);
-    const tire=mesh(new T.CylinderGeometry(.49,.49,.29,48,1),rubber,wheel);tire.rotation.x=Math.PI/2;
-    const tireSide=side*.165;
-    const face=mesh(new T.CylinderGeometry(.383,.383,.015,48),trim,wheel);face.rotation.x=Math.PI/2;face.position.z=tireSide;
-    const rotor=mesh(new T.CylinderGeometry(.327,.327,.018,48),silver,wheel);rotor.rotation.x=Math.PI/2;rotor.position.z=tireSide+side*.014;
-    const darkDisc=mesh(new T.CylinderGeometry(.274,.274,.021,48),trim,wheel);darkDisc.rotation.x=Math.PI/2;darkDisc.position.z=tireSide+side*.028;
-    const lip=mesh(new T.TorusGeometry(.36,.033,10,48),silver,wheel);lip.position.z=tireSide+side*.046;
-    const tireLine=mesh(new T.TorusGeometry(.475,.014,8,48),mat(0x272827,.8),wheel);tireLine.position.z=tireSide+side*.04;
-    for(let k=0;k<8;k++) {
-      const a=(k/8)*Math.PI*2;
-      const spoke=mesh(new T.BoxGeometry(.065,.25,.032),silver,wheel);
-      spoke.position.set(Math.sin(a)*.17,Math.cos(a)*.17,tireSide+side*.065);
-      spoke.rotation.z=-a;
-      // Tire shoulder ribs, subtle, limited for mobile GPU budgets.
-      if (!smallScreen) {
-        const tread=mesh(new T.BoxGeometry(.031,.045,.23),mat(0x171817,.9),wheel);
-        tread.position.set(Math.sin(a)*.47,Math.cos(a)*.47,0);tread.rotation.z=-a;
+  // Individual HELLA-era dual circular projectors with warm white ANGEL EYES,
+  // glass housings, bright luminous rings and a restrained additive halo.
+  for(const side of [-1,1]){
+    const base=side*.71;
+    const casing=box(.082,.32,.655,chromeDark,2.325,1.197,side*.747);
+    box(.017,.305,.638,crystal,2.386,1.198,side*.747);
+    for(const offset of [-.145,.145]){
+      const z=base+offset;
+      const housing=mesh(new T.CylinderGeometry(.134,.134,.014,40),trim);
+      housing.rotation.z=Math.PI/2;housing.position.set(2.392,1.19,z);
+      const projector=mesh(new T.CircleGeometry(.081,40),blackGlass);
+      projector.rotation.y=Math.PI/2;projector.position.set(2.405,1.19,z);
+      const lens=mesh(new T.CircleGeometry(.039,32),silver);
+      lens.rotation.y=Math.PI/2;lens.position.set(2.412,1.19,z);
+      for(const [radius,tube,material,x] of [[.105,.014,haloMat,2.431],[.119,.023,haloSoft,2.434]]){
+        const ring=mesh(new T.TorusGeometry(radius,tube,9,48),material);
+        ring.rotation.y=Math.PI/2;ring.position.set(x,1.19,z);
       }
     }
-    const hub=mesh(new T.CylinderGeometry(.075,.075,.037,24),sand,wheel);hub.rotation.x=Math.PI/2;hub.position.z=tireSide+side*.084;
+    // Lower bumper fog projectors and red/white rear lamp stacks.
+    const fog=mesh(new T.CylinderGeometry(.073,.073,.02,32),lamps);
+    fog.rotation.z=Math.PI/2;fog.position.set(2.401,.718,side*.77);
+    box(.078,.22,.36,rearLamp,-2.355,1.135,side*.82);
+    box(.08,.062,.31,crystal,-2.401,1.23,side*.82);
+    const exhaust=mesh(new T.TorusGeometry(.083,.018,10,28),silver);
+    exhaust.position.set(-2.383,.61,side*.73);exhaust.rotation.y=Math.PI/2;
   }
-  // Lower side skirt / diffuser, roof aerial and relief seams.
-  for(const side of [-1,1])box(2.02,.065,.13,trim,-.1,.54,side*1.007);
-  const antenna=box(.27,.056,.1,trim,-.88,2.105,0);antenna.rotation.z=-.13;
+  box(.035,.11,1.1,trim,2.417,.65,0);
+  box(.022,.018,1.28,silver,2.434,.58,0);
+  // Discreet front/boot BMW roundels drawn as real recessed concentric discs.
+  function roundel(x,y,z,front){
+    const badge=mesh(new T.CylinderGeometry(.083,.083,.012,32),silver);
+    badge.rotation.x=Math.PI/2;badge.position.set(x,y,z);
+    const blue=mat(0x2c75a1,.18,.22);
+    for(let k=0;k<4;k++){
+      const wedge=mesh(new T.CircleGeometry(.057,12,k*Math.PI/2,Math.PI/2),k%2?blue:lamps);
+      wedge.rotation.x=-Math.PI/2;
+      wedge.position.set(x,y+.012,z);
+      wedge.rotation.z=front?0:.2;
+    }
+  }
+  roundel(1.82,1.358,0,true);
+  // Period-correct deep-dish CHROME wheels: broad polished step lip, visible
+  // barrel depth, ten split-spokes, drilled brakes and low-profile tires.
+  const wheelGroups=[];
+  const deepBarrel=mat(0x868d97,.19,.92,{envMapIntensity:2.6});
+  for(const x of [-1.50,1.43])for(const side of [-1,1]){
+    const wheel=new T.Group();car.add(wheel);wheel.position.set(x,.57,side*1.075);
+    wheelGroups.push(wheel);
+    const tire=mesh(new T.CylinderGeometry(.49,.49,.29,48,1),rubber,wheel);
+    tire.rotation.x=Math.PI/2;
+    const outer=side*.171;
+    const barrel=mesh(new T.CylinderGeometry(.40,.40,.02,48),deepBarrel,wheel);
+    barrel.rotation.x=Math.PI/2;barrel.position.z=outer;
+    const rotor=mesh(new T.CylinderGeometry(.30,.30,.018,48),chromeDark,wheel);
+    rotor.rotation.x=Math.PI/2;rotor.position.z=outer+side*.022;
+    const inset=mesh(new T.CylinderGeometry(.242,.242,.015,48),trim,wheel);
+    inset.rotation.x=Math.PI/2;inset.position.z=outer+side*.039;
+    for(const [r,t,d] of [[.405,.036,.05],[.353,.016,.073],[.312,.012,.040]]){
+      const lip=mesh(new T.TorusGeometry(r,t,10,60),r>.35?silver:chromeDark,wheel);
+      lip.position.z=outer+side*d;
+    }
+    for(let k=0;k<10;k++){
+      const a=2*Math.PI*k/10;
+      for(const delta of [-.038,.038]){
+        const spoke=mesh(new T.BoxGeometry(.033,.292,.026),silver,wheel);
+        spoke.position.set(Math.sin(a+delta)*.17,Math.cos(a+delta)*.17,outer+side*.059);
+        spoke.rotation.z=-(a+delta);
+      }
+      if(!smallScreen){
+        const tread=mesh(new T.BoxGeometry(.023,.039,.265),trim,wheel);
+        tread.position.set(Math.sin(a)*.478,Math.cos(a)*.478,0);
+        tread.rotation.z=-a;
+        const brakeHole=mesh(new T.CylinderGeometry(.013,.013,.022,8),trim,wheel);
+        brakeHole.rotation.x=Math.PI/2;
+        brakeHole.position.set(Math.sin(a)*.273,Math.cos(a)*.273,outer+side*.03);
+      }
+    }
+    const center=mesh(new T.CylinderGeometry(.072,.072,.041,28),silver,wheel);
+    center.rotation.x=Math.PI/2;center.position.z=outer+side*.086;
+    const emblem=mesh(new T.CylinderGeometry(.046,.046,.045,24),mat(0x22435a,.2,.45),wheel);
+    emblem.rotation.x=Math.PI/2;emblem.position.z=outer+side*.104;
+    const tireSeam=mesh(new T.TorusGeometry(.477,.009,7,48),chromeDark,wheel);
+    tireSeam.position.z=outer+side*.014;
+  }
+  // Subtle shark fin and contrasting door/window seals.
+  const antenna=box(.18,.036,.075,trim,-.68,2.103,0);
+  antenna.rotation.z=-.12;
   // The stage uses a subtle procedural radial matte underneath the car.
   const stageCanvas=document.createElement('canvas');stageCanvas.width=256;stageCanvas.height=256;
   const ctx=stageCanvas.getContext('2d');const gradient=ctx.createRadialGradient(128,128,2,128,128,126);
@@ -275,6 +363,66 @@ function initStudio(T) {
   const grip=mesh(new T.CylinderGeometry(.065,.055,.24,12),trim,rig);grip.rotation.z=.35;grip.position.set(.46,.9,0);
   const head=mesh(new T.CylinderGeometry(.085,.035,.2,16),sand,rig);head.rotation.z=.35;head.position.set(.14,.14,0);
   rig.position.set(-1.65,3.15,1.65);rig.rotation.x=.38;rig.visible=false;
+  // Extra original 3D props give the scene a complete premium detailing atelier.
+  // Polishing machine (motor, bridge handle, pad, eccentric spindle).
+  const polisher=new T.Group();scene.add(polisher);
+  const toolBody=mesh(new T.CylinderGeometry(.115,.145,.4,20),sand,polisher);
+  toolBody.rotation.z=Math.PI/2;toolBody.position.set(0,.21,0);
+  const toolNose=mesh(new T.SphereGeometry(.14,18,12),trim,polisher);
+  toolNose.scale.set(1.3,.8,.8);toolNose.position.set(-.21,.22,0);
+  const toolHandle=mesh(new T.TorusGeometry(.20,.035,9,26,Math.PI),trim,polisher);
+  toolHandle.rotation.z=Math.PI/2;toolHandle.position.set(.03,.42,0);
+  const spindle=mesh(new T.CylinderGeometry(.051,.051,.15,16),chromeDark,polisher);
+  spindle.position.y=-.03;
+  const pad=mesh(new T.CylinderGeometry(.22,.22,.061,36),mat(0xe8dabb,.9),polisher);
+  pad.position.y=-.115;
+  const padRim=mesh(new T.TorusGeometry(.20,.012,7,36),silver,polisher);
+  padRim.rotation.x=Math.PI/2;padRim.position.y=-.139;
+  polisher.visible=false;
+
+  // Ceramic-coating vial with stopper and label on a low product plinth.
+  const product=new T.Group();scene.add(product);
+  product.position.set(2.78,0,1.67);
+  const pedestal=mesh(new T.CylinderGeometry(.31,.34,.16,32),trim,product);
+  pedestal.position.y=.095;
+  const vial=mesh(new T.CylinderGeometry(.12,.12,.41,24),blackGlass,product);
+  vial.position.y=.38;
+  const band=mesh(new T.CylinderGeometry(.123,.123,.145,24),sand,product);
+  band.position.y=.35;
+  const cap=mesh(new T.CylinderGeometry(.083,.083,.14,24),silver,product);
+  cap.position.y=.655;
+  const stopper=mesh(new T.CylinderGeometry(.049,.049,.045,18),trim,product);
+  stopper.position.y=.75;
+  // Folded microfiber and pail sitting behind the rear wheel.
+  const cloth=new T.Group();scene.add(cloth);cloth.position.set(-2.77,.09,1.70);
+  const textile=mat(0xbfb399,.92,.04,{side:T.DoubleSide});
+  for(let i=0;i<3;i++){
+    const fold=mesh(new T.BoxGeometry(.64,.052,.39),textile,cloth);
+    fold.position.set(.04*i,.065*i,0);
+  }
+  const bucket=new T.Group();scene.add(bucket);bucket.position.set(-2.79,0,-1.58);
+  const bucketShell=mesh(new T.CylinderGeometry(.30,.235,.52,24,1,true),trim,bucket);
+  bucketShell.position.y=.28;
+  const rimBucket=mesh(new T.TorusGeometry(.30,.023,8,32),silver,bucket);
+  rimBucket.rotation.x=Math.PI/2;rimBucket.position.y=.54;
+  const handleBucket=mesh(new T.TorusGeometry(.38,.018,8,32,Math.PI),silver,bucket);
+  handleBucket.rotation.z=Math.PI/2;handleBucket.position.y=.50;
+  // Slim studio inspection bars make the glossy clearcoat catch highlights.
+  const inspection=new T.Group();scene.add(inspection);
+  for(const z of [-2.35,2.35]){
+    box(3.3,.065,.11,trim,0,3.5,z,inspection);
+    box(3.05,.014,.06,lamps,0,3.465,z,inspection);
+  }
+  const shineLight=new T.PointLight(0xfff3da,0,4.2,2);
+  shineLight.position.set(1.0,2.7,1.7);scene.add(shineLight);
+  const starMat=new T.MeshBasicMaterial({color:0xfff5d4,transparent:true,opacity:0,blending:T.AdditiveBlending,depthWrite:false,toneMapped:false});
+  const star=new T.Group();scene.add(star);star.position.set(1.57,1.46,1.22);
+  for(const ang of [0,Math.PI/2,Math.PI/4,-Math.PI/4]){
+    const arm=mesh(new T.BoxGeometry(.28,.009,.009),starMat,star);
+    arm.rotation.z=ang;
+  }
+  star.visible=false;
+
   // Water fan is updated with ONE GPU points buffer instead of hundreds of draw calls.
   const count=smallScreen?110:235;
   const positions=new Float32Array(count*3), startSeeds=[];
@@ -312,10 +460,13 @@ function initStudio(T) {
   }
   updateFoam(0,false);
 
-  const pointer={x:0,y:0};let washStart=-1;let washProgress=0;let running=false;
+  const pointer={x:0,y:0};let washStart=-1;let washProgress=0;let running=false;let detailed=false;
   function startWash(){
     if(running)return;
-    running=true;washStart=performance.now(); washProgress=0;
+    running=true;detailed=false;washStart=performance.now(); washProgress=0;
+    paint.roughness=.24;paint.clearcoatRoughness=.075;
+    polisher.visible=false;star.visible=false;shineLight.intensity=0;
+    rig.position.set(-1.65,3.15,1.65);rig.rotation.z=0;
     rig.visible=true;water.visible=true;
     washTrigger.disabled=true;washTrigger.textContent='LAVAGE EN COURS ···';
     announce('01 / PRÉLAVAGE');
@@ -360,15 +511,25 @@ function initStudio(T) {
       updateFoam(washProgress,true);
       updateWater(now,rig.position.x);
       if(washProgress>.35&&washProgress<.67)announce('02 / RINÇAGE');
+      const finishing=washProgress>.68;
+      rig.visible=!finishing;water.visible=!finishing;
+      polisher.visible=finishing;
+      if(finishing){
+        const pass=(washProgress-.68)/.32;
+        polisher.position.set(1.26+pass*.70,1.65+Math.sin(pass*Math.PI*4)*.028,.57+Math.sin(pass*Math.PI*2)*.10);
+        polisher.rotation.y=-.18;pad.rotation.y=now*.012;
+        shineLight.position.set(polisher.position.x,2.18,polisher.position.z);
+        shineLight.intensity=1.7+Math.sin(now*.012)*.3;
+      }
       if(washProgress>=.67)announce('03 / FINITION');
       const shine=Math.min(1,Math.max(0,(washProgress-.43)/.53));
-      paint.roughness=.25-.13*shine;
-      paint.clearcoatRoughness=.09-.055*shine;
+      paint.roughness=.24-.185*shine;
+      paint.clearcoatRoughness=.075-.052*shine;
       if(washProgress>=1){
-        running=false;rig.visible=false;water.visible=false;
+        running=false;detailed=true;rig.visible=false;water.visible=false;polisher.visible=false;
         updateFoam(0,false);washTrigger.disabled=false;
         washTrigger.innerHTML='RECOMMENCER <span aria-hidden="true">↗</span>';
-        announce('FINI / CARROSSERIE NETTOYÉE');
+        announce('FINITION MIROIR / NOIR PROFOND');
       }
     }
     const scroll=Math.min(1,Math.max(0,scrollY / (innerHeight*1.7)));
@@ -378,7 +539,16 @@ function initStudio(T) {
     car.rotation.x+=(targetX-car.rotation.x)*.03;
     studio.position.y=Math.sin(time*.62)*.028;
     studio.rotation.y=Math.sin(time*.27)*.017;
-    if(!running) paint.roughness+=(.18-paint.roughness)*.003;
+    product.rotation.y=Math.sin(time*.42)*.07;
+    inspection.position.y=Math.sin(time*.64)*.025;
+    if(!running){
+      const finalRoughness=detailed?.055:.24;
+      paint.roughness+=(finalRoughness-paint.roughness)*.022;
+      shineLight.intensity+=(0-shineLight.intensity)*.08;
+    }
+    star.visible=detailed;
+    starMat.opacity=detailed?Math.max(0,(Math.sin(time*2.8)+.2))*.78:0;
+    star.scale.setScalar(.85+Math.sin(time*3.7)*.18);
     renderer.render(scene,camera);
   }
   let lastW=0,lastH=0;
