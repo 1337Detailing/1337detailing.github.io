@@ -401,6 +401,8 @@ function initStudio(T) {
   fallback.style.transition='opacity .45s ease';fallback.style.opacity='0';
   fallback.style.pointerEvents='none';
   requestAnimationFrame(render);
+  // Autoplay the first studio wash on desktop; mobile keeps explicit opt-in.
+  if (!smallScreen) setTimeout(() => { if (!document.hidden && inViewport && !running) startWash(); }, 1600);
   // A static fallback remains shown when the browser blocks 3D import/WebGL.
   addEventListener('pagehide',()=>{animating=false;observer.disconnect();ro.disconnect();renderer.dispose();env.dispose();pmrem.dispose();}, {once:true});
 }
