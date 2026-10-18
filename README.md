@@ -19,7 +19,7 @@ Ouvrir `http://localhost:8000/`. Les bibliothèques Three.js, GSAP et Lenis sont
 
 - `index.html` : titres, services, tableaux des tarifs et coordonnées.
 - `styles.css` : couleurs et comportement responsive. Accent ajustable avec `--sand`.
-- `app.js` : scène 3D de voiture construite avec Three.js (pas de modèle tiers), lance de lavage, mousse instanciée, jet d'eau en particules, finitions, effet souris/scroll et moteur d'animation.
+- `app.js` : berline BMW E39 stylisée en géométrie Three.js originale, peinture noir miroir, angel eyes lumineux, double calandre et jantes chromées à rebord ; atelier 3D avec lance, eau, mousse, polisseuse, flacon céramique, microfibre et reflets d'inspection ; effets souris/scroll et repli SVG si WebGL est absent.
 - `assets/` : favicon, image OG, illustration de secours si WebGL n'est pas pris en charge.
 - `archives/` : copie de l'ancienne page conservée avant refonte.
 
