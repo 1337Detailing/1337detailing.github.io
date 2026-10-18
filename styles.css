@@ -15,3 +15,33 @@
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}.js.motion-ready .reveal{opacity:1!important;transform:none!important}}
 
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+
+
+/* BMW E39 authentic model · preserve the site's sand-on-black identity */
+.e39-atelier{position:absolute;inset:0;z-index:2;isolation:isolate;overflow:hidden;background:radial-gradient(ellipse 65% 44% at 56% 54%,#27251d55,transparent 86%)}
+.e39-iframe{display:block;position:absolute;inset:0;border:0;width:100%;height:100%;background:transparent;filter:contrast(1.04) saturate(.96)}
+.e39-loader{position:absolute;left:50%;top:54%;transform:translate(-50%,-50%);white-space:nowrap;color:#b9a984;font:10px/1.8 var(--mono);letter-spacing:.09em;padding:12px 18px;background:#12110ec9;border:1px solid #b6a67940;pointer-events:none;z-index:3}
+.e39-loaded .e39-loader{display:none}
+.e39-process{position:absolute;inset:0;opacity:0;pointer-events:none;z-index:2;transition:opacity .55s ease}
+.e39-spray{background:repeating-linear-gradient(116deg,transparent 0 14px,#e5edee56 15px,transparent 18px 32px);-webkit-mask-image:linear-gradient(90deg,transparent 20%,#000 47%,#000 57%,transparent 77%);mask-image:linear-gradient(90deg,transparent 20%,#000 47%,#000 57%,transparent 77%);background-size:250% 140%;animation:e39Water .56s linear infinite}
+.e39-foam{background:radial-gradient(circle at 26% 41%,#ebf2f45f 0 2px,transparent 3px),radial-gradient(circle at 65% 60%,#fafafa85 0 2px,transparent 3px),radial-gradient(circle at 40% 56%,#fff7e877 0 3px,transparent 4px),radial-gradient(ellipse 45% 33% at 49% 55%,#e9e5db38,transparent 80%);background-size:33px 39px,43px 47px,57px 42px,100% 100%;animation:e39Foam 5s ease-in-out infinite alternate}
+.e39-polish{background:linear-gradient(103deg,transparent 22%,#fff9ef13 44%,#fffffac9 49.5%,#fffffadd 50%,#fff4df25 56%,transparent 76%);transform:translateX(-110%);mix-blend-mode:screen}
+.e39-prewash .e39-foam{opacity:.78}
+.e39-rinse .e39-spray{opacity:.45}
+.e39-buff .e39-polish{opacity:.78;animation:e39Sweep 2.65s ease-in-out infinite}
+.e39-finished .e39-polish{opacity:.35;animation:e39Sweep 6s ease-in-out infinite}
+@keyframes e39Water{to{background-position:130px 240px}}
+@keyframes e39Foam{to{background-position:22px -32px,-17px 12px,9px 35px,0 0}}
+@keyframes e39Sweep{0%{transform:translateX(-110%)}100%{transform:translateX(120%)}}
+.e39-credit{position:absolute;z-index:5;right:var(--page);bottom:22%;font:9px/1.65 var(--mono);letter-spacing:.025em;color:#b3a98e;text-decoration:none;background:#11100bc9;padding:5px 8px;border:1px solid #b6a6792c;max-width:44%;text-align:right}
+.e39-credit:hover,.e39-credit:focus-visible{color:#f1e4bd;border-color:#c3ad73}
+.hero-visual .visual-code,.hero-visual .visual-index{z-index:4}
+.hero-visual .wash-console{z-index:6}
+@media(max-width:760px){
+  .e39-credit{font-size:8px;right:var(--page);bottom:21%;max-width:57%}
+  .e39-loader{font-size:9px;white-space:normal;text-align:center;max-width:70%}
+  .e39-iframe{min-width:100%;min-height:100%}
+}
+@media(prefers-reduced-motion:reduce){
+  .e39-spray,.e39-foam,.e39-polish{animation:none}
+}
