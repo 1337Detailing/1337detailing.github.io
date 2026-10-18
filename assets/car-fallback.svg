@@ -1,12 +1,56 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 500" fill="none">
-<defs><linearGradient id="body" x1="80" y1="210" x2="715" y2="378" gradientUnits="userSpaceOnUse"><stop stop-color="#61615a"/><stop offset=".27" stop-color="#282a27"/><stop offset=".54" stop-color="#3c3c36"/><stop offset=".8" stop-color="#1c1f1d"/><stop offset="1" stop-color="#6f6753"/></linearGradient><linearGradient id="roof" x1="249" y1="110" x2="555" y2="300" gradientUnits="userSpaceOnUse"><stop stop-color="#717063"/><stop offset=".5" stop-color="#343633"/><stop offset="1" stop-color="#0c1518"/></linearGradient><radialGradient id="floor"><stop stop-color="#353127" stop-opacity=".65"/><stop offset="1" stop-color="#0a0a09" stop-opacity="0"/></radialGradient></defs>
-<ellipse cx="440" cy="410" rx="360" ry="60" fill="url(#floor)"/>
-<path d="M100 296 131 269 241 252 305 169 361 137 519 139 592 251 702 272 744 301 753 341 713 364 153 372 103 349Z" fill="url(#body)" stroke="#8f8468" stroke-width="2"/>
-<path d="M269 251 319 177 361 155 511 157 567 245Z" fill="url(#roof)" stroke="#8d8b80" stroke-width="4"/>
-<path d="m338 171-47 73 118 1V169Zm91-2v76h113l-41-74Z" fill="#091316" stroke="#8a8a81" stroke-width="2"/>
-<path d="M101 304 747 316" stroke="#a7a096" stroke-opacity=".6" stroke-width="3"/><path d="M132 278 244 264M602 259 707 278" stroke="#d8c48a" stroke-opacity=".5" stroke-width="4"/><path d="M161 368 708 362" stroke="#0c0c0b" stroke-width="9"/>
-<g><circle cx="236" cy="358" r="64" fill="#111311" stroke="#292a25" stroke-width="16"/><circle cx="236" cy="358" r="44" stroke="#b5b1a2" stroke-width="8"/><circle cx="236" cy="358" r="30" fill="#171918" stroke="#62635b" stroke-width="4"/><path d="M236 320v76M198 358h76M209 331l54 54m0-54-54 54" stroke="#a6a49a" stroke-width="7"/><circle cx="236" cy="358" r="9" fill="#d8c48a"/></g>
-<g><circle cx="624" cy="358" r="64" fill="#111311" stroke="#292a25" stroke-width="16"/><circle cx="624" cy="358" r="44" stroke="#b5b1a2" stroke-width="8"/><circle cx="624" cy="358" r="30" fill="#171918" stroke="#62635b" stroke-width="4"/><path d="M624 320v76M586 358h76M597 331l54 54m0-54-54 54" stroke="#a6a49a" stroke-width="7"/><circle cx="624" cy="358" r="9" fill="#d8c48a"/></g>
-<path d="m702 288 42 13-2 19-56-8Z" fill="#c8b990"/><path d="M105 308h62" stroke="#b2a48a" stroke-width="7"/><path d="M422 259V330m15-49h52" stroke="#777870" stroke-width="3"/>
-<path d="M80 416h715" stroke="#6d654f" stroke-dasharray="2 11" opacity=".4"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 500" fill="none" role="img" aria-label="Berline E39 noire brillante avec angel eyes et jantes chromées à rebord">
+<defs>
+  <linearGradient id="jet" x1="100" y1="190" x2="740" y2="361" gradientUnits="userSpaceOnUse"><stop stop-color="#3c4449"/><stop offset=".16" stop-color="#050608"/><stop offset=".37" stop-color="#1b2127"/><stop offset=".53" stop-color="#030406"/><stop offset=".68" stop-color="#434c4e"/><stop offset=".78" stop-color="#050608"/><stop offset=".94" stop-color="#16191a"/><stop offset="1" stop-color="#52545a"/></linearGradient>
+  <linearGradient id="hood" x1="500" y1="240" x2="741" y2="319" gradientUnits="userSpaceOnUse"><stop stop-color="#171b21"/><stop offset=".3" stop-color="#030406"/><stop offset=".64" stop-color="#626568"/><stop offset=".78" stop-color="#0c0e11"/><stop offset="1" stop-color="#33363b"/></linearGradient>
+  <linearGradient id="window" x1="300" y1="135" x2="531" y2="275" gradientUnits="userSpaceOnUse"><stop stop-color="#54616b"/><stop offset=".25" stop-color="#090f16"/><stop offset=".7" stop-color="#04080b"/><stop offset="1" stop-color="#1d2a34"/></linearGradient>
+  <radialGradient id="ground"><stop stop-color="#423c2c" stop-opacity=".60"/><stop offset="1" stop-color="#11110e" stop-opacity="0"/></radialGradient>
+  <linearGradient id="chrome" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fffdf7"/><stop offset=".2" stop-color="#70777f"/><stop offset=".46" stop-color="#f8fbfb"/><stop offset=".7" stop-color="#545c64"/><stop offset=".88" stop-color="#dee8ea"/><stop offset="1" stop-color="#484e56"/></linearGradient>
+  <radialGradient id="dish"><stop stop-color="#111419"/><stop offset=".54" stop-color="#313941"/><stop offset=".73" stop-color="#07090b"/><stop offset=".81" stop-color="#cbd5d7"/><stop offset=".89" stop-color="#6b757d"/><stop offset="1" stop-color="#eff7f7"/></radialGradient>
+  <filter id="light" x="-130%" y="-130%" width="360%" height="360%"><feGaussianBlur stdDeviation="6"/></filter>
+  <filter id="shade" x="-40%" y="-30%" width="180%" height="180%"><feGaussianBlur stdDeviation="16"/></filter>
+</defs>
+<ellipse cx="433" cy="414" rx="348" ry="57" fill="url(#ground)"/>
+<ellipse cx="419" cy="382" rx="325" ry="31" fill="#010102" opacity=".75" filter="url(#shade)"/>
+<!-- Long bonnet and short boot make the E39 proportions legible. -->
+<path d="M99 299 115 281 226 264 288 190 328 156 506 155 563 246 669 265 727 283 754 304 756 343 734 360 129 371 98 346Z" fill="url(#jet)" stroke="#a3a7a5" stroke-width="1.7"/>
+<path d="M551 248 670 264 730 283 752 304 739 332 570 298Z" fill="url(#hood)" opacity=".65"/>
+<path d="M241 264 293 194 332 164 504 164 559 251 541 265Z" fill="#12171c" stroke="#969a95" stroke-width="3"/>
+<path d="M305 198 338 173 419 173 417 250 257 257Z" fill="url(#window)" stroke="#7c8b90" stroke-width="1.5"/>
+<path d="M435 174 499 174 540 249 435 251Z" fill="url(#window)" stroke="#7c8b90" stroke-width="1.5"/>
+<path d="M427 171 427 261" stroke="#171a20" stroke-width="9"/>
+<path d="M249 267 562 266M304 179 506 178" stroke="#d7d4c7" stroke-opacity=".68" stroke-width="3"/>
+<path d="M121 313 739 318" stroke="#070808" stroke-width="10"/><path d="M119 319 739 324" stroke="#818783" stroke-opacity=".72" stroke-width="2"/>
+<path d="M407 270 405 350M240 277 236 351M591 278 593 348" stroke="#050607" stroke-width="2.5" opacity=".8"/>
+<path d="M406 281h55m-216-1h51" stroke="#d3dce0" stroke-width="3" stroke-linecap="round"/>
+<path d="M562 257 659 271M128 289 220 271" stroke="#cad4d5" stroke-width="3" opacity=".65"/>
+<path d="M98 345 752 350M145 368 711 364" stroke="#08090c" stroke-width="7"/>
+<!-- Deep chrome step lips, ten metallic paired spokes and tire sidewalls. -->
+<g id="wheel">
+  <circle r="70" fill="#07080a" stroke="#1b2023" stroke-width="12"/>
+  <circle r="57" fill="url(#chrome)" stroke="#22272c" stroke-width="3"/>
+  <circle r="50" fill="url(#dish)" stroke="#f6f9f9" stroke-width="4"/>
+  <circle r="40" fill="#0c1014" stroke="#555e66" stroke-width="3"/>
+  <g stroke="url(#chrome)" stroke-width="7" stroke-linecap="round">
+    <path d="M0 -35 0 35M-35 0H35M-25-25 25 25M25-25-25 25"/>
+    <path d="M-13-33 13 33M13-33-13 33M-33-13 33 13M-33 13 33-13" stroke-width="4"/>
+  </g>
+  <circle r="10" fill="#e6edef" stroke="#343c42" stroke-width="5"/>
+  <circle r="6" fill="#326a90"/>
+  <circle r="55" stroke="#fff" stroke-opacity=".6" stroke-width="1.5"/>
+</g>
+<use href="#wheel" transform="translate(242 356)"/>
+<use href="#wheel" transform="translate(624 356)"/>
+<!-- Round high-intensity warm halo lamps, visible even with 3D disabled. -->
+<g>
+  <path d="m675 287 63 12 6 24-71-8Z" fill="#11171b" stroke="#9a9d95" stroke-width="2"/>
+  <ellipse cx="696" cy="301" rx="12" ry="14" stroke="#fff0b6" stroke-width="12" opacity=".55" filter="url(#light)"/>
+  <ellipse cx="725" cy="307" rx="11" ry="12" stroke="#fff0b6" stroke-width="12" opacity=".6" filter="url(#light)"/>
+  <ellipse cx="696" cy="301" rx="10" ry="12" fill="#1b242e" stroke="#ffeed0" stroke-width="5"/>
+  <ellipse cx="725" cy="307" rx="10" ry="11" fill="#0f151b" stroke="#ffeed0" stroke-width="5"/>
+  <path d="M686 297h15M716 302h14" stroke="#e2e6dd" stroke-width="1.8"/>
+</g>
+<path d="m99 308 31-3v31l-30 2Z" fill="#ab191e" stroke="#dd8e70" stroke-width="2"/>
+<path d="M715 340 751 344M103 346h42" stroke="#c5ccc8" stroke-width="4"/>
+<path d="M292 188 345 169M492 169 533 232M566 274 665 283" stroke="#f2f3eb" stroke-opacity=".21" stroke-width="5" stroke-linecap="round"/>
+<path d="M83 420h695" stroke="#d4c18a" stroke-opacity=".28" stroke-dasharray="2 12"/>
 </svg>
