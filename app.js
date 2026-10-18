@@ -291,7 +291,7 @@ function initStudio(T) {
   // Discreet front/boot BMW roundels drawn as real recessed concentric discs.
   function roundel(x,y,z,front){
     const badge=mesh(new T.CylinderGeometry(.083,.083,.012,32),silver);
-    badge.rotation.x=Math.PI/2;badge.position.set(x,y,z);
+    badge.position.set(x,y,z);
     const blue=mat(0x2c75a1,.18,.22);
     for(let k=0;k<4;k++){
       const wedge=mesh(new T.CircleGeometry(.057,12,k*Math.PI/2,Math.PI/2),k%2?blue:lamps);
@@ -516,7 +516,7 @@ function initStudio(T) {
       polisher.visible=finishing;
       if(finishing){
         const pass=(washProgress-.68)/.32;
-        polisher.position.set(1.26+pass*.70,1.65+Math.sin(pass*Math.PI*4)*.028,.57+Math.sin(pass*Math.PI*2)*.10);
+        polisher.position.set(1.26+pass*.70,1.52+Math.sin(pass*Math.PI*4)*.028,.57+Math.sin(pass*Math.PI*2)*.10);
         polisher.rotation.y=-.18;pad.rotation.y=now*.012;
         shineLight.position.set(polisher.position.x,2.18,polisher.position.z);
         shineLight.intensity=1.7+Math.sin(now*.012)*.3;
